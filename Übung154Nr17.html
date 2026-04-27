@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fehlersuche - Übung S. 154/17</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.4s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; } 
+        .wrong-bg { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }   
+        
+        input[type="text"], input[type="number"], select {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Error box styling */
+        .error-box {
+            background-image: repeating-linear-gradient(
+                45deg,
+                #fff1f2,
+                #fff1f2 10px,
+                #ffe4e6 10px,
+                #ffe4e6 20px
+            );
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-indigo-700 text-white py-8 shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Mathe-Detektive: Übung S. 154 / 17</h2>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🕵️‍♂️</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Finde den Fehler!</h3>
+                    <p class="mb-2">Andere Schüler haben diese Aufgaben gerechnet – aber leider haben sich Fehler eingeschlichen! Du bist heute der Lehrer:</p>
+                    <ul class="list-disc list-inside space-y-2 font-semibold text-indigo-800 bg-indigo-50 p-4 rounded-lg border border-indigo-200 mt-2">
+                        <li>Finde heraus, <strong>welche Regel (KlaPoPS)</strong> missachtet wurde.</li>
+                        <li>Korrigiere den Fehler und rechne die Aufgabe Schritt für Schritt <strong>richtig</strong> aus.</li>
+                        <li>Achtung: Vielleicht hat sich auch eine Aufgabe eingeschlichen, bei der <em>gar kein</em> Fehler gemacht wurde? Traue niemandem!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Block a -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe a)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter (Falscher) Weg:</p>
+                    <p class="font-mono text-lg text-slate-800">$-5 \cdot 134 - 84 = -5 \cdot 50 = -250$</p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="a_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="punkt">Strichrechnung (Minus) vor Punktrechnung (Mal) ausgeführt</option>
+                            <option value="vorzeichen">Das Minus-Zeichen am Anfang vergessen</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Rechne es richtig: $-5 \cdot 134 - 84$</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 1 (Punkt zuerst): </span>
+                            <input type="number" id="a_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                            <span>$- 84$</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Endergebnis:</span>
+                            <input type="number" id="a_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('a', 'punkt', -670, -754)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe a) Prüfen</button>
+                    <div id="fb_a" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+
+            <!-- Block b -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe b)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter (Falscher) Weg:</p>
+                    <p class="font-mono text-lg text-slate-800 text-sm sm:text-base">
+                        $-11 \cdot (88 + 120) : (-4)$<br>
+                        $= -11 \cdot (88 - 30)$<br>
+                        $= -11 \cdot 58 = -638$
+                    </p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="b_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="klammer">Teil der Klammer dividiert (Klammer-Regel ignoriert)</option>
+                            <option value="punkt">Von rechts nach links gerechnet</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Rechne es richtig: $-11 \cdot (88 + 120) : (-4)$</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 1 (Klammer!): $-11 \cdot$</span>
+                            <input type="number" id="b_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                            <span>$: (-4)$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 2 (Links n. Rechts): </span>
+                            <input type="number" id="b_s2" class="w-24 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                            <span>$: (-4)$</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Endergebnis:</span>
+                            <input type="number" id="b_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('b', 'klammer', 208, 572, -2288)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe b) Prüfen</button>
+                    <div id="fb_b" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+
+            <!-- Block c -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe c)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter (Falscher) Weg:</p>
+                    <p class="font-mono text-lg text-slate-800 text-sm sm:text-base">
+                        $-3 \cdot (4 \cdot 5)$<br>
+                        $= -3 \cdot 4 \cdot (-3) \cdot 5$<br>
+                        $= -12 \cdot (-15) = 180$
+                    </p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="c_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="distributiv">Mal-Rechnung in der Klammer verteilt (Falsches Gesetz)</option>
+                            <option value="klammer">Die Klammer nicht ausgerechnet</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Rechne es richtig: $-3 \cdot (4 \cdot 5)$</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 1 (Klammer zuerst): $-3 \cdot$</span>
+                            <input type="number" id="c_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Endergebnis:</span>
+                            <input type="number" id="c_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('c', 'distributiv', 20, -60)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe c) Prüfen</button>
+                    <div id="fb_c" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+
+            <!-- Block d (Trick) -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-400 text-amber-900 font-bold px-4 py-1 rounded-bl-lg text-sm shadow-sm">Genau hinsehen!</div>
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe d)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter Weg:</p>
+                    <p class="font-mono text-lg text-slate-800">
+                        $-24 : (-2)^3 = -24 : (-8) = 3$
+                    </p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="d_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="potenz">Die Potenz $(-2)^3$ falsch ausgerechnet</option>
+                            <option value="vorzeichen">Beim Geteiltrechnen das Vorzeichen verwechselt</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Beweise deine Wahl:</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Was ist wirklich $(-2)^3$?</span>
+                            <input type="number" id="d_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Was ist dann $-24 : \dots$?</span>
+                            <input type="number" id="d_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('d', 'kein_fehler', -8, 3)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe d) Prüfen</button>
+                    <div id="fb_d" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+
+            <!-- Block e -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe e)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter (Falscher) Weg:</p>
+                    <p class="font-mono text-lg text-slate-800 text-sm sm:text-base">
+                        $156 : (-13) + 7 \cdot 2$<br>
+                        $= 156 : (-13) + 14$<br>
+                        $= 156 : 1 = 156$
+                    </p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="e_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="plus">Plus (Mitte) vor Geteilt (vorne) gerechnet</option>
+                            <option value="potenz">Die Multiplikation falsch ausgerechnet</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Rechne es richtig: $156 : (-13) + 7 \cdot 2$</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 1 (Punkt zuerst!): </span>
+                            <input type="number" id="e_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="156:-13">
+                            <span>$+$</span>
+                            <input type="number" id="e_s2" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="7*2">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Endergebnis:</span>
+                            <input type="number" id="e_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('e', 'plus', -12, 2, 14)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe e) Prüfen</button>
+                    <div id="fb_e" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+
+            <!-- Block f -->
+            <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                <h3 class="text-xl font-bold mb-3 border-b pb-2 text-slate-700">Aufgabe f)</h3>
+                
+                <div class="error-box p-4 rounded-lg border-2 border-rose-300 mb-4 shadow-sm">
+                    <p class="text-sm font-bold text-rose-800 uppercase tracking-wide mb-1">Gerechneter (Falscher) Weg:</p>
+                    <p class="font-mono text-lg text-slate-800 text-sm sm:text-base">
+                        $-178 + 28 \cdot (22 - 15)$<br>
+                        $= -178 + 28 \cdot 7$<br>
+                        $= -150 \cdot 7 = -1050$
+                    </p>
+                </div>
+                
+                <div class="space-y-4 flex-grow">
+                    <div>
+                        <label class="block text-sm font-bold text-indigo-900 mb-1">1. Was wurde hier falsch gemacht?</label>
+                        <select id="f_err" class="w-full p-2 border-2 border-indigo-300 rounded shadow-sm focus:ring-2 focus:ring-indigo-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="plus">Vorne das Plus vor der Punktrechnung ausgeführt</option>
+                            <option value="klammer">Klammer falsch ausgerechnet</option>
+                            <option value="kein_fehler">Kein Fehler! Alles ist richtig.</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <h4 class="font-bold mb-2 text-indigo-900 text-sm">2. Rechne es richtig: $-178 + 28 \cdot (22 - 15)$</h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 1 (Klammer): $-178 + 28 \cdot$</span>
+                            <input type="number" id="f_s1" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
+                            <span>Schritt 2 (Punkt!): $-178 + $</span>
+                            <input type="number" id="f_s2" class="w-20 p-2 border-2 border-indigo-300 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="font-bold text-indigo-900">Endergebnis:</span>
+                            <input type="number" id="f_final" class="w-24 p-2 border-2 border-indigo-400 rounded text-center font-bold focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button onclick="checkTask('f', 'plus', 7, 18, 196)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Aufgabe f) Prüfen</button>
+                    <div id="fb_f" class="hidden mt-3 text-sm"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Socratic Reflection Task -->
+        <section class="bg-indigo-50 border-2 border-indigo-200 p-6 rounded-xl shadow-md mt-8">
+            <h3 class="text-xl font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                <span>🧠</span> Fazit des Mathe-Detektivs
+            </h3>
+            <p class="mb-4">Du hast nun alle Fehler gefunden und verbessert. Wenn du dir die Aufgaben <strong>a), e) und f)</strong> noch einmal ansiehst...</p>
+            <p class="font-bold mb-2">Erkläre: Welcher Fehler wird von Schülern offenbar am allerhäufigsten gemacht? Welche extrem wichtige Vorrangregel haben sie fast immer vergessen?</p>
+            
+            <textarea id="reflection_text" rows="3" class="w-full p-3 border border-indigo-300 rounded-lg shadow-inner focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="Am häufigsten wurde vergessen, dass..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000 mt-8">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Detektiv-Auszeichnung! Musterlösung</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe a)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Strich vor Punkt gerechnet.</p>
+                        <p>$-5 \cdot 134 - 84 = -670 - 84 = \mathbf{-754}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe b)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Klammer-Regel ignoriert.</p>
+                        <p>$-11 \cdot (88 + 120) : (-4) = -11 \cdot 208 : (-4)$<br>
+                        $= -2288 : (-4) = \mathbf{572}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe c)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Distributivgesetz fälschlicherweise bei Punktrechnung angewendet.</p>
+                        <p>$-3 \cdot (4 \cdot 5) = -3 \cdot 20 = \mathbf{-60}$</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe d)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Keiner! Das war eine Trickaufgabe.</p>
+                        <p>$-24 : (-2)^3 = -24 : (-8) = \mathbf{3}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe e)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Plus vor Geteilt gerechnet ($-13+14$).</p>
+                        <p>$156 : (-13) + 7 \cdot 2 = -12 + 14 = \mathbf{2}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe f)</h4>
+                        <p class="text-emerald-700 mb-1"><strong>Fehler:</strong> Vorne Addiert bevor multipliziert wurde.</p>
+                        <p>$-178 + 28 \cdot (22 - 15) = -178 + 28 \cdot 7$<br>
+                        $= -178 + 196 = \mathbf{18}$</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function parseNum(val) {
+            if (typeof val !== 'string') return NaN;
+            return parseFloat(val.trim().replace(',', '.'));
+        }
+
+        function isCorrect(id, target) {
+            const val = document.getElementById(id).value;
+            return parseNum(val) === target;
+        }
+
+        function setStyle(id, isValid) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isValid) el.classList.add('correct-bg');
+            else el.classList.add('wrong-bg');
+        }
+
+        function showFb(id, msg, isSuccess) {
+            const el = document.getElementById(id);
+            el.innerHTML = isSuccess ? `✅ ${msg}` : `💡 <strong>Tipp:</strong> ${msg}`;
+            el.className = `mt-3 block p-3 rounded-lg text-sm shadow-sm ${isSuccess ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+            el.classList.remove('hidden');
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([el]).catch((err) => console.log(err.message));
+            }
+        }
+
+        let tasksDone = {a: false, b: false, c: false, d: false, e: false, f: false, refl: false};
+
+        function checkAllDone() {
+            if (Object.values(tasksDone).every(v => v === true)) {
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+                const sol = document.getElementById('solution_section');
+                sol.classList.remove('hidden');
+                setTimeout(() => sol.classList.remove('opacity-0'), 50);
+                setTimeout(() => sol.scrollIntoView({ behavior: 'smooth' }), 300);
+            }
+        }
+
+        // --- Master Check Function for tasks ---
+        function checkTask(taskLetter, correctErrVal, s1Target, finalTarget, s2Target = null) {
+            const errId = `${taskLetter}_err`;
+            const s1Id = `${taskLetter}_s1`;
+            const s2Id = `${taskLetter}_s2`;
+            const finalId = `${taskLetter}_final`;
+            const fbId = `fb_${taskLetter}`;
+
+            const errSelect = document.getElementById(errId);
+            const errVal = errSelect.value;
+            
+            let errCorrect = (errVal === correctErrVal);
+            setStyle(errId, errCorrect);
+
+            if (!errCorrect) {
+                if (taskLetter === 'd' && errVal !== '') {
+                    showFb(fbId, "Bist du dir sicher? Rechne die Aufgabe unten mal selbst durch. Was ist wirklich $(-2)^3$?", false);
+                } else {
+                    showFb(fbId, "Bitte überprüfe deine Fehler-Analyse oben im Dropdown! Schau dir genau an, was in dem roten Kasten als allererstes ausgerechnet wurde.", false);
+                }
+                return;
+            }
+
+            let s1Correct = isCorrect(s1Id, s1Target);
+            let s2Correct = true;
+            if (s2Target !== null) {
+                s2Correct = isCorrect(s2Id, s2Target);
+                setStyle(s2Id, s2Correct);
+            }
+            let finalCorrect = isCorrect(finalId, finalTarget);
+
+            setStyle(s1Id, s1Correct);
+            setStyle(finalId, finalCorrect);
+
+            if (!s1Correct || !s2Correct) {
+                showFb(fbId, "Deine Fehler-Analyse ist spitze! Aber bei den Rechenschritten hakt es noch. Denk an die Vorzeichen und KlaPoPS!", false);
+            } else if (!finalCorrect) {
+                showFb(fbId, "Die Zwischenschritte stimmen! Rechne jetzt noch sauber zum Endergebnis.", false);
+            } else {
+                if(taskLetter === 'd') {
+                    showFb(fbId, "Du hast dich nicht austricksen lassen! Perfekt.", true);
+                } else {
+                    showFb(fbId, "Super korrigiert! Der Schüler sollte sich bei dir bedanken.", true);
+                }
+                tasksDone[taskLetter] = true;
+                checkAllDone();
+            }
+        }
+
+        // --- Socratic Reflection (Regex) ---
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const el = document.getElementById('reflection_text');
+            const fbBox = document.getElementById('reflection_feedback');
+            
+            if (text.length < 15) {
+                fbBox.innerHTML = "💡 Da fehlt noch etwas Text. Nenne bitte die genaue Regel, die so oft missachtet wurde.";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-amber-100 text-amber-800 border border-amber-200";
+                fbBox.classList.remove('hidden');
+                return;
+            }
+
+            const regexKlapops = /(?=.*([pP]unkt\s*vor\s*[sS]trich|KlaPoPS|[mM]al\s*vor|[gG]eteilt\s*vor))/i;
+
+            if (!regexKlapops.test(text)) {
+                el.classList.remove('correct-bg');
+                el.classList.add('wrong-bg');
+                fbBox.innerHTML = "💡 <strong>Tipp:</strong> Schau dir Aufgabe a), e) und f) an. Die Schüler haben dort immer zuerst Minus oder Plus gerechnet, obwohl daneben noch ein Mal oder Geteilt stand. Wie heißt die wichtigste Regel der Mathematik dafür?";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-red-100 text-red-800 border border-red-200";
+                fbBox.classList.remove('hidden');
+            } 
+            else {
+                // Success!
+                el.classList.remove('wrong-bg');
+                el.classList.add('correct-bg');
+                fbBox.innerHTML = "✅ <strong>Hervorragende Beobachtung!</strong> 'Punkt vor Strich' ist tatsächlich der Fehler Nummer 1. Die Schüler haben das Plus oder Minus in der Mitte gesehen und sofort losgerechnet, statt die Punktrechnungen außen zu beschützen.";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-green-100 text-green-800 border border-green-200";
+                fbBox.classList.remove('hidden');
+                
+                tasksDone.refl = true;
+                checkAllDone();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorrangregeln - Übung S. 151/3</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7; border-color: #22c55e; } 
+        .wrong-bg { background-color: #fee2e2; border-color: #ef4444; }   
+        
+        input[type="text"], input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header & Prior Knowledge -->
+    <header class="bg-indigo-600 text-white py-8 shadow-md">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Vorrangregeln: Übung S. 151 / 3</h2>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card: KlaPoPS -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🔎</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Forschungsauftrag: Weggelassene Klammern</h3>
+                    <p class="mb-2">In dieser Übung sollen wir untersuchen, was passiert, wenn wir bestimmte Klammern in einem Term einfach <strong>weglassen</strong>. Ändert sich das Ergebnis oder bleibt es gleich?</p>
+                    <p class="text-indigo-700 font-semibold bg-indigo-50 p-3 rounded mt-2 border border-indigo-100">
+                        Erinnerung (KlaPoPS): 1. Klammer | 2. Potenz | 3. Punkt ($\cdot , :$) | 4. Strich ($+ , -$) <br>
+                        Gleichwertiges (wie Punkt und Punkt) wird von <strong>links nach rechts</strong> gerechnet!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 1: Task a -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe a)</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Variante 1: MIT Klammer -->
+                <div class="p-5 bg-blue-50 rounded-xl border-2 border-blue-200">
+                    <h4 class="font-bold text-lg mb-3 text-blue-800">1) Original (MIT Klammer)</h4>
+                    <div class="text-xl font-mono mb-4">$17 - 7 \cdot \color{blue}{(5 + 10)} : 2$</div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Schritt 1: Was wird zuerst gerechnet?</label>
+                            <select id="a_with_dd" class="w-full p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500 feedback-transition">
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="strich">Die Strichrechnung (17 - 7)</option>
+                                <option value="punkt">Die Punktrechnung (7 * 5)</option>
+                                <option value="klammer">Die Klammer (5 + 10)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2: $17 - 7 \cdot $</span>
+                            <input type="text" id="a_with_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$: 2$</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 3 (Punkt v. links n. rechts!): $17 - $</span>
+                            <input type="text" id="a_with_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$: 2$</span>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span>Schritt 4 (Division): $17 - $</span>
+                                <input type="text" id="a_with_s3" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            </div>
+                            <div class="bg-blue-100 text-blue-800 p-3 rounded-lg text-sm border border-blue-300">
+                                <strong>💡 Hilfe zur Kommazahl:</strong> Huch, $105 : 2$ geht gar nicht glatt auf! Da ihr Kommazahlen vielleicht noch nicht im Unterricht hattet, ein kleiner Trick: Denke an Geld! Wenn du 105 Euro auf 2 Personen aufteilst, bekommt jeder 52 Euro und 50 Cent. <br>Trage hier also <strong>52,5</strong> ein.
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-blue-200 flex flex-col gap-2">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold">Endergebnis:</span>
+                                <input type="text" id="a_with_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            </div>
+                            <div class="bg-blue-100 text-blue-800 p-3 rounded-lg text-sm border border-blue-300">
+                                <strong>💡 Hilfe zum Endergebnis:</strong> Jetzt musst du rechnen: $17 - 52,5$. Auch das ist knifflig! Stell dir vor, du hast 17 Euro im Portemonnaie, kaufst aber für 52,50 Euro ein. Dann hast du am Ende 35,50 Euro Schulden. <br>Trage als Ergebnis <strong>-35,5</strong> ein.
+                            </div>
+                        </div>
+
+                        <button onclick="checkTaskAWith()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition mt-2">Schritte prüfen</button>
+                        <div id="fb_a_with" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Variante 2: OHNE Klammer -->
+                <div class="p-5 bg-amber-50 rounded-xl border-2 border-amber-200">
+                    <h4 class="font-bold text-lg mb-3 text-amber-800">2) Verändert (OHNE Klammer)</h4>
+                    <div class="text-xl font-mono mb-4">$17 - 7 \cdot 5 + 10 : 2$</div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Schritt 1: Was wird nun zuerst gerechnet?</label>
+                            <select id="a_wout_dd" class="w-full p-2 border rounded shadow-sm focus:ring-2 focus:ring-amber-500 feedback-transition">
+                                <option value="">-- Bitte wählen --</option>
+                                <option value="strich">Von links nach rechts (17 - 7)</option>
+                                <option value="punkt">Beide Punktrechnungen (Mal und Geteilt)</option>
+                                <option value="plus">Die Addition in der Mitte (5 + 10)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Punktrechnungen ausführen): </span>
+                            <br class="w-full md:hidden">
+                            <span>$17 - $</span>
+                            <input type="text" id="a_wout_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$ + $</span>
+                            <input type="text" id="a_wout_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 3 (Strich v. links n. rechts!):</span>
+                            <input type="text" id="a_wout_s3" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$ + 5$</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2 border-t border-amber-200">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="a_wout_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                        </div>
+
+                        <button onclick="checkTaskAWout()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">Schritte prüfen</button>
+                        <div id="fb_a_wout" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Task b -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe b)</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Variante 1: MIT Klammer -->
+                <div class="p-5 bg-blue-50 rounded-xl border-2 border-blue-200">
+                    <h4 class="font-bold text-lg mb-3 text-blue-800">1) Original (MIT Klammer)</h4>
+                    <div class="text-xl font-mono mb-4">$12 \cdot 3 - \color{blue}{(6 \cdot 8)} + (-4) \cdot 2$</div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Punkt- und Klammerrechnung ausführen): </span>
+                            <br class="w-full">
+                            <input type="text" id="b_with_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$-$</span>
+                            <input type="text" id="b_with_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+$</span>
+                            <input type="text" id="b_with_s3" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="(-?)">
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Strichrechnung von links!):</span>
+                            <input type="text" id="b_with_s4" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+ (-8)$</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2 border-t border-blue-200">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="b_with_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                        </div>
+
+                        <button onclick="checkTaskBWith()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Schritte prüfen</button>
+                        <div id="fb_b_with" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Variante 2: OHNE Klammer -->
+                <div class="p-5 bg-amber-50 rounded-xl border-2 border-amber-200">
+                    <h4 class="font-bold text-lg mb-3 text-amber-800">2) Verändert (OHNE Klammer)</h4>
+                    <div class="text-xl font-mono mb-4">$12 \cdot 3 - 6 \cdot 8 + (-4) \cdot 2$</div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Punktrechnung ausführen): </span>
+                            <br class="w-full">
+                            <input type="text" id="b_wout_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$-$</span>
+                            <input type="text" id="b_wout_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+$</span>
+                            <input type="text" id="b_wout_s3" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="(-?)">
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Strichrechnung von links!):</span>
+                            <input type="text" id="b_wout_s4" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+ (-8)$</span>
+                        </div>
+
+                        <div class="flex items-center gap-3 pt-2 border-t border-amber-200">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="b_wout_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                        </div>
+
+                        <button onclick="checkTaskBWout()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">Schritte prüfen</button>
+                        <div id="fb_b_wout" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Socratic Reflection Task -->
+        <section class="bg-indigo-50 border-2 border-indigo-200 p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                <span>🕵️</span> Fasse deine Beobachtungen zusammen!
+            </h3>
+            <p class="mb-4">Du hast nun beide Aufgaben mit und ohne Klammer durchgerechnet. Bei Aufgabe a) hat sich das Ergebnis komplett verändert. Bei Aufgabe b) ist das Ergebnis gleich geblieben!</p>
+            <p class="font-bold mb-2">Erkläre ausführlich: Warum hat das Weglassen der Klammer bei Aufgabe b) absolut nichts am Endergebnis geändert? (Tipp: Welche Rechenart stand in der blauen Klammer?)</p>
+            
+            <textarea id="reflection_text" rows="4" class="w-full p-3 border border-indigo-300 rounded-lg shadow-inner focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="Bei Aufgabe b) hat sich das Ergebnis nicht verändert, weil..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Exzellent! Hier ist die Musterlösung</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base mb-6">
+                <div>
+                    <h4 class="font-bold text-emerald-900 border-b border-emerald-300 pb-1 mb-2">Aufgabe a)</h4>
+                    <p class="mb-2"><strong>Mit Klammer:</strong><br>
+                    $17 - 7 \cdot (5 + 10) : 2$ <br>
+                    $= 17 - 7 \cdot 15 : 2$ <br>
+                    $= 17 - 105 : 2$ <br>
+                    $= 17 - 52,5 = \mathbf{-35,5}$</p>
+                    
+                    <p><strong>Ohne Klammer:</strong><br>
+                    $17 - 7 \cdot 5 + 10 : 2$ <br>
+                    $= 17 - 35 + 5$ <br>
+                    $= -18 + 5 = \mathbf{-13}$</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-900 border-b border-emerald-300 pb-1 mb-2">Aufgabe b)</h4>
+                    <p class="mb-2"><strong>Mit Klammer:</strong><br>
+                    $12 \cdot 3 - (6 \cdot 8) + (-4) \cdot 2$ <br>
+                    $= 36 - 48 + (-8)$ <br>
+                    $= -12 - 8 = \mathbf{-20}$</p>
+                    
+                    <p><strong>Ohne Klammer:</strong><br>
+                    $12 \cdot 3 - 6 \cdot 8 + (-4) \cdot 2$ <br>
+                    $= 36 - 48 - 8 = \mathbf{-20}$</p>
+                </div>
+            </div>
+            <div class="p-4 bg-emerald-100 rounded-lg text-emerald-900 font-semibold border border-emerald-300">
+                <strong>Fazit (Erläuterung):</strong> 
+                Bei Aufgabe a) ändert sich der Wert ($-35,5$ zu $-13$), da die Strichrechnung $(5+10)$ durch die Klammer Vorrang vor der Punktrechnung hatte. Fällt sie weg, gilt KlaPoPS. <br><br>
+                Bei Aufgabe b) ändert sich der Wert <strong>nicht</strong> (bleibt $-20$), weil in der Klammer eine Punktrechnung $(6 \cdot 8)$ steht. Wegen "Punkt vor Strich" wird diese auch ohne Klammer ohnehin zuerst ausgerechnet. Die Klammer in Aufgabe b) ist also <em>unnötig</em>.
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+
+        // Parses German number formats (e.g. "52,5" -> 52.5)
+        function parseGermanNum(val) {
+            if (typeof val !== 'string') return NaN;
+            val = val.trim().replace(',', '.');
+            return parseFloat(val);
+        }
+
+        // Checks number input with slight tolerance
+        function isCorrectNum(inputValue, targetValue, tolerance = 0.01) {
+            const parsed = parseGermanNum(inputValue);
+            if (isNaN(parsed)) return false;
+            return Math.abs(parsed - targetValue) <= tolerance;
+        }
+
+        function setStyle(elementId, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isCorrect) {
+                el.classList.add('correct-bg');
+            } else {
+                el.classList.add('wrong-bg');
+            }
+        }
+
+        function showMessage(elementId, msg, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = isCorrect ? `✅ ${msg}` : `💡 ${msg}`;
+            el.className = `text-sm mt-3 block p-3 rounded-lg ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            el.classList.remove('hidden');
+        }
+
+        // --- Task Logic ---
+
+        function checkTaskAWith() {
+            const dd = document.getElementById('a_with_dd').value;
+            const s1 = document.getElementById('a_with_s1').value;
+            const s2 = document.getElementById('a_with_s2').value;
+            const s3 = document.getElementById('a_with_s3').value;
+            const final = document.getElementById('a_with_final').value;
+            
+            let allCorrect = true; let fb = "";
+
+            if (dd === 'klammer') { setStyle('a_with_dd', true); } 
+            else { setStyle('a_with_dd', false); allCorrect = false; fb += "Schritt 1: Erinner dich an KlaPoPS (K = Klammer).<br>"; }
+
+            if (isCorrectNum(s1, 15)) { setStyle('a_with_s1', true); } 
+            else { setStyle('a_with_s1', false); allCorrect = false; fb += "Schritt 2: Berechne die Summe in der Klammer (5+10).<br>"; }
+
+            if (isCorrectNum(s2, 105)) { setStyle('a_with_s2', true); } 
+            else { setStyle('a_with_s2', false); allCorrect = false; fb += "Schritt 3: Punktrechnung von links nach rechts, also zuerst 7 * 15.<br>"; }
+
+            if (isCorrectNum(s3, 52.5)) { setStyle('a_with_s3', true); } 
+            else { setStyle('a_with_s3', false); allCorrect = false; fb += "Schritt 4: Schau dir den Hilfe-Tipp an! 105 geteilt durch 2 ergibt unsere Kommazahl.<br>"; }
+
+            if (isCorrectNum(final, -35.5)) { setStyle('a_with_final', true); } 
+            else { setStyle('a_with_final', false); allCorrect = false; fb += "Endergebnis: Nutze den Tipp. Wenn du von 17 etwas abziehst, was über 50 ist, landest du tief im Minus.<br>"; }
+
+            if (allCorrect) showMessage('fb_a_with', "Klasse! Du hast die Vorrangregeln mit Klammer perfekt angewendet.", true);
+            else showMessage('fb_a_with', fb, false);
+        }
+
+        function checkTaskAWout() {
+            const dd = document.getElementById('a_wout_dd').value;
+            const s1 = document.getElementById('a_wout_s1').value;
+            const s2 = document.getElementById('a_wout_s2').value;
+            const s3 = document.getElementById('a_wout_s3').value;
+            const final = document.getElementById('a_wout_final').value;
+            
+            let allCorrect = true; let fb = "";
+
+            if (dd === 'punkt') { setStyle('a_wout_dd', true); } 
+            else { setStyle('a_wout_dd', false); allCorrect = false; fb += "Schritt 1: Ohne Klammer gilt Punkt vor Strich!<br>"; }
+
+            if (isCorrectNum(s1, 35)) { setStyle('a_wout_s1', true); } 
+            else { setStyle('a_wout_s1', false); allCorrect = false; fb += "Schritt 2 (linkes Feld): Was ist 7 * 5?<br>"; }
+
+            if (isCorrectNum(s2, 5)) { setStyle('a_wout_s2', true); } 
+            else { setStyle('a_wout_s2', false); allCorrect = false; fb += "Schritt 2 (rechtes Feld): Was ist 10 : 2?<br>"; }
+
+            if (isCorrectNum(s3, -18)) { setStyle('a_wout_s3', true); } 
+            else { setStyle('a_wout_s3', false); allCorrect = false; fb += "Schritt 3: Strichrechnung strikt von links nach rechts (17 - 35).<br>"; }
+
+            if (isCorrectNum(final, -13)) { setStyle('a_wout_final', true); } 
+            else { setStyle('a_wout_final', false); allCorrect = false; fb += "Endergebnis: Addiere -18 + 5.<br>"; }
+
+            if (allCorrect) showMessage('fb_a_wout', "Super! Fällt dir auf, wie sehr sich das Ergebnis zu links verändert hat (-13 statt -35,5)?", true);
+            else showMessage('fb_a_wout', fb, false);
+        }
+
+        function checkTaskBWith() {
+            const s1 = document.getElementById('b_with_s1').value;
+            const s2 = document.getElementById('b_with_s2').value;
+            const s3 = document.getElementById('b_with_s3').value;
+            const s4 = document.getElementById('b_with_s4').value;
+            const final = document.getElementById('b_with_final').value;
+            
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, 36)) { setStyle('b_with_s1', true); } else { setStyle('b_with_s1', false); allCorrect = false; fb += "Feld 1: Erste Punktrechnung (12 * 3).<br>"; }
+            if (isCorrectNum(s2, 48)) { setStyle('b_with_s2', true); } else { setStyle('b_with_s2', false); allCorrect = false; fb += "Feld 2: Klammer auflösen (6 * 8).<br>"; }
+            if (isCorrectNum(s3, -8)) { setStyle('b_with_s3', true); } else { setStyle('b_with_s3', false); allCorrect = false; fb += "Feld 3: Letzte Punktrechnung (-4 * 2). Vergiss das Minus nicht!<br>"; }
+            if (isCorrectNum(s4, -12)) { setStyle('b_with_s4', true); } else { setStyle('b_with_s4', false); allCorrect = false; fb += "Schritt 2: Von links nach rechts! (36 - 48).<br>"; }
+            if (isCorrectNum(final, -20)) { setStyle('b_with_final', true); } else { setStyle('b_with_final', false); allCorrect = false; fb += "Endergebnis: -12 + (-8).<br>"; }
+
+            if (allCorrect) showMessage('fb_b_with', "Fehlerfrei durchgerechnet!", true); else showMessage('fb_b_with', fb, false);
+        }
+
+        function checkTaskBWout() {
+            const s1 = document.getElementById('b_wout_s1').value;
+            const s2 = document.getElementById('b_wout_s2').value;
+            const s3 = document.getElementById('b_wout_s3').value;
+            const s4 = document.getElementById('b_wout_s4').value;
+            const final = document.getElementById('b_wout_final').value;
+            
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, 36)) { setStyle('b_wout_s1', true); } else { setStyle('b_wout_s1', false); allCorrect = false; fb += "Feld 1: Erste Punktrechnung (12 * 3).<br>"; }
+            if (isCorrectNum(s2, 48)) { setStyle('b_wout_s2', true); } else { setStyle('b_wout_s2', false); allCorrect = false; fb += "Feld 2: Zweite Punktrechnung (6 * 8).<br>"; }
+            if (isCorrectNum(s3, -8)) { setStyle('b_wout_s3', true); } else { setStyle('b_wout_s3', false); allCorrect = false; fb += "Feld 3: Dritte Punktrechnung (-4 * 2).<br>"; }
+            if (isCorrectNum(s4, -12)) { setStyle('b_wout_s4', true); } else { setStyle('b_wout_s4', false); allCorrect = false; fb += "Schritt 2: Von links nach rechts (36 - 48).<br>"; }
+            if (isCorrectNum(final, -20)) { setStyle('b_wout_final', true); } else { setStyle('b_wout_final', false); allCorrect = false; fb += "Endergebnis: -12 - 8.<br>"; }
+
+            if (allCorrect) showMessage('fb_b_wout', "Richtig! Ist dir schon aufgefallen, dass du genau die gleichen Zahlen wie links eingetippt hast?", true); else showMessage('fb_b_wout', fb, false);
+        }
+
+        // --- Socratic Reflection (Regex Based) ---
+        
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const feedbackBox = document.getElementById('reflection_feedback');
+            const textAreaEl = document.getElementById('reflection_text');
+            
+            if (text.length < 15) {
+                feedbackBox.innerHTML = "💡 Bitte schreibe einen aussagekräftigen Satz. Was war in der Klammer bei b) los?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-amber-100 text-amber-800 block";
+                return;
+            }
+
+            // Regex checks
+            // Mentioning what is INSIDE the bracket (Punktrechnung, Mal, Multiplikation, 6*8)
+            const regexPunkt = /(?=.*([pP]unkt|[mM]al|[mM]ultipli|\*))/;
+            
+            // Mentioning the rule (vor Strich, KlaPoPS, Vorrang, zuerst, ohnehin)
+            const regexRegel = /(?=.*([sS]trich|[vV]orrang|[kK]la[pP]o[pP][sS]|[zZ]uerst|[oO]hnehin|[sS]owieso))/;
+
+            // Mentioning the state of the bracket (unnötig, überflüssig, egal, braucht man nicht, ändert nichts)
+            const regexUnnoetig = /(?=.*([uU]nnötig|[üÜ]berflüssig|[eE]gal|[kK]ein [uU]nterschied|[äÄ]ndert nichts|[gG]leich))/;
+
+            const hasPunkt = regexPunkt.test(text);
+            const hasRegel = regexRegel.test(text);
+            const hasUnnoetig = regexUnnoetig.test(text);
+
+            if (!hasPunkt) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Sokratischer Tipp:</strong> Schau dir die weggelassene blaue Klammer in Aufgabe b) an. Was für eine <em>Art von Rechnung</em> steht dort drinnen ($6 \cdot 8$)?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-red-100 text-red-800 block";
+            } 
+            else if (!hasRegel) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Sokratischer Tipp:</strong> Richtig, da ist eine Punktrechnung! Und wann berechnet man Punktrechnungen im Vergleich zu den Minus/Plus-Zeichen drum herum? Denk an unsere Hauptregel (KlaP...).";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-orange-100 text-orange-800 block";
+            } 
+            else {
+                // Success!
+                textAreaEl.classList.remove('wrong-bg');
+                textAreaEl.classList.add('correct-bg');
+                feedbackBox.innerHTML = "✅ <strong>Hervorragend begründet!</strong> Du hast erkannt, dass in der Klammer bei b) eine Punktrechnung stand. Da ohnehin 'Punkt vor Strich' gilt, wird diese Stelle sowieso zuerst ausgerechnet. Die Klammer war also völlig überflüssig und ändert nichts am Ergebnis!";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-green-100 text-green-800 block";
+                
+                triggerConfetti();
+                unlockSolution();
+            }
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#4f46e5', '#10b981', '#f59e0b']
+            });
+        }
+
+        function unlockSolution() {
+            const solSection = document.getElementById('solution_section');
+            solSection.classList.remove('hidden');
+            setTimeout(() => {
+                solSection.classList.remove('opacity-0');
+            }, 50);
+            
+            setTimeout(() => {
+                solSection.scrollIntoView({ behavior: 'smooth' });
+                if(window.MathJax) {
+                    MathJax.typesetPromise([solSection]).catch((err) => console.log(err.message));
+                }
+            }, 300);
+        }
+
+    </script>
+</body>
+</html>

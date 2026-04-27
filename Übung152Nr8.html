@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechenbäume - Übung S. 152/8</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.4s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; } 
+        .wrong-bg { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }   
+        
+        input[type="text"], input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Tree node styles */
+        .tree-node-given {
+            position: absolute;
+            width: 4rem; /* 64px */
+            height: 2.5rem; /* 40px */
+            border: 2px solid #64748b;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border-radius: 0.25rem;
+            z-index: 10;
+        }
+        
+        .tree-node-input {
+            position: absolute;
+            width: 4rem; 
+            height: 2.5rem; 
+            border: 2px solid #f97316; /* orange-500 */
+            background-color: #ffedd5; /* orange-100 */
+            text-align: center;
+            font-weight: bold;
+            border-radius: 0.25rem;
+            z-index: 10;
+            outline: none;
+        }
+        .tree-node-input:focus {
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .tree-op {
+            position: absolute;
+            width: 2rem; /* 32px */
+            height: 2rem; /* 32px */
+            border: 2px solid #64748b;
+            background-color: white;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.125rem;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-cyan-700 text-white py-8 shadow-md">
+        <div class="max-w-5xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Rechenbäume knacken: Übung S. 152 / 8</h2>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🌲</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Wie liest man einen Rechenbaum?</h3>
+                    <p class="mb-2">Ein Rechenbaum zeigt dir die Vorrangregeln (KlaPoPS) als Bild! Er wird von <strong>oben nach unten</strong> berechnet.</p>
+                    <ul class="list-disc list-inside space-y-2 font-semibold text-cyan-800 bg-cyan-50 p-4 rounded-lg border border-cyan-200 mt-2">
+                        <li>Die obersten Äste werden zuerst ausgerechnet (das entspricht oft den runden Klammern in einem Term).</li>
+                        <li>Der letzte Knoten ganz unten zeigt das <strong>Endergebnis</strong> und die Haupt-Rechenart des gesamten Terms.</li>
+                        <li><strong>Dein Auftrag:</strong> Fülle die fehlenden orangenen Kästchen aus. Manchmal musst du dafür <em>rückwärts rechnen</em> (Umkehraufgabe)!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 1: Task a -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe a)</h3>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Visual Tree -->
+                <div class="flex-shrink-0">
+                    <p class="font-bold mb-4">1. Fülle den Baum aus:</p>
+                    <div class="relative w-[320px] h-[320px] mx-auto bg-slate-50 rounded-xl border-2 border-slate-200 shadow-inner">
+                        <!-- SVG Lines -->
+                        <svg class="absolute inset-0 z-0" width="320" height="320">
+                            <!-- TopL to OpTop -->
+                            <line x1="80" y1="40" x2="160" y2="96" stroke="#94a3b8" stroke-width="3" />
+                            <!-- TopR to OpTop -->
+                            <line x1="240" y1="40" x2="160" y2="96" stroke="#94a3b8" stroke-width="3" />
+                            <!-- OpTop to Mid -->
+                            <line x1="160" y1="96" x2="160" y2="160" stroke="#94a3b8" stroke-width="3" />
+                            <!-- BotL to OpBot -->
+                            <line x1="56" y1="160" x2="96" y2="216" stroke="#94a3b8" stroke-width="3" />
+                            <!-- Mid to OpBot -->
+                            <line x1="160" y1="160" x2="96" y2="216" stroke="#94a3b8" stroke-width="3" />
+                            <!-- OpBot to Final -->
+                            <line x1="96" y1="216" x2="96" y2="280" stroke="#94a3b8" stroke-width="3" />
+                        </svg>
+
+                        <!-- Nodes -->
+                        <!-- Row 1 -->
+                        <input type="text" id="a_topL" class="tree-node-input feedback-transition" style="left: 48px; top: 20px;" placeholder="?">
+                        <div class="tree-node-given" style="left: 208px; top: 20px;">-4</div>
+                        
+                        <!-- Op 1 -->
+                        <div class="tree-op" style="left: 144px; top: 80px;">$\cdot$</div>
+                        
+                        <!-- Row 2 -->
+                        <div class="tree-node-given" style="left: 24px; top: 140px;">8</div>
+                        <input type="text" id="a_mid" class="tree-node-input feedback-transition" style="left: 128px; top: 140px;" placeholder="?">
+                        
+                        <!-- Op 2 -->
+                        <div class="tree-op" style="left: 80px; top: 200px;">$\cdot$</div>
+                        
+                        <!-- Row 3 -->
+                        <div class="tree-node-given" style="left: 64px; top: 260px;">-416</div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="checkTreeA()" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Baum prüfen</button>
+                        <div id="fb_tree_a" class="hidden mt-2 text-sm text-left"></div>
+                    </div>
+                </div>
+
+                <!-- Guided Term & Word form (Hidden initially) -->
+                <div id="section_term_a" class="flex-grow space-y-6 hidden opacity-0 feedback-transition">
+                    <!-- Term Construction -->
+                    <div class="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+                        <h4 class="font-bold text-lg text-cyan-900 mb-3">2. Term aufstellen</h4>
+                        <p class="text-sm mb-4">Setze die Zahlen aus dem Baum so ein, dass ein passender Rechen-Term entsteht. Denke an die Klammern für die erste Rechnung (die obere)!</p>
+                        
+                        <div class="flex items-center gap-2 text-lg font-bold flex-wrap justify-center">
+                            <div class="tree-node-given !relative !inset-auto">8</div>
+                            <span>$\cdot$</span>
+                            <span>$($</span>
+                            <input type="text" id="a_term_1" class="w-16 p-2 border-2 border-cyan-400 rounded text-center focus:ring-2 focus:ring-cyan-500 feedback-transition" placeholder="?">
+                            <span>$\cdot$</span>
+                            <div class="tree-node-given !relative !inset-auto">-4</div>
+                            <span>$)$</span>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button onclick="checkTermA()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition">Term prüfen</button>
+                            <div id="fb_term_a" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+
+                    <!-- Word Form -->
+                    <div id="section_word_a" class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 hidden opacity-0 feedback-transition">
+                        <h4 class="font-bold text-lg text-indigo-900 mb-2">3. In Wortform beschreiben</h4>
+                        <p class="text-sm mb-3">Beschreibe den Term in Fachsprache. Nutze Wörter wie <em>Summe, Differenz, Produkt, Quotient</em>. Beginne mit der Rechenart, die <strong>ganz zuletzt</strong> (ganz unten im Baum) gerechnet wird!</p>
+                        
+                        <textarea id="a_word" rows="3" class="w-full p-3 border-2 border-indigo-300 rounded shadow-inner focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="Der Term ist die ... aus ..."></textarea>
+                        
+                        <div class="mt-3">
+                            <button onclick="checkWordA()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Wortform prüfen</button>
+                            <div id="fb_word_a" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Task b -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe b)</h3>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Visual Tree -->
+                <div class="flex-shrink-0">
+                    <p class="font-bold mb-4">1. Fülle den Baum aus:</p>
+                    <div class="relative w-[320px] h-[320px] mx-auto bg-slate-50 rounded-xl border-2 border-slate-200 shadow-inner">
+                        <!-- SVG Lines -->
+                        <svg class="absolute inset-0 z-0" width="320" height="320">
+                            <line x1="80" y1="40" x2="160" y2="96" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="240" y1="40" x2="160" y2="96" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="160" y1="96" x2="160" y2="160" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="56" y1="160" x2="96" y2="216" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="160" y1="160" x2="96" y2="216" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="96" y1="216" x2="96" y2="280" stroke="#94a3b8" stroke-width="3" />
+                        </svg>
+
+                        <!-- Nodes -->
+                        <div class="tree-node-given" style="left: 48px; top: 20px;">-14</div>
+                        <input type="text" id="b_topR" class="tree-node-input feedback-transition" style="left: 208px; top: 20px;" placeholder="?">
+                        
+                        <div class="tree-op" style="left: 144px; top: 80px;">$\cdot$</div>
+                        
+                        <div class="tree-node-given" style="left: 24px; top: 140px;">-252</div>
+                        <input type="text" id="b_mid" class="tree-node-input feedback-transition" style="left: 128px; top: 140px;" placeholder="?">
+                        
+                        <div class="tree-op" style="left: 80px; top: 200px;">$:$</div>
+                        
+                        <div class="tree-node-given" style="left: 64px; top: 260px;">-6</div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="checkTreeB()" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Baum prüfen</button>
+                        <div id="fb_tree_b" class="hidden mt-2 text-sm text-left"></div>
+                    </div>
+                </div>
+
+                <!-- Guided Term & Word form (Hidden initially) -->
+                <div id="section_term_b" class="flex-grow space-y-6 hidden opacity-0 feedback-transition">
+                    <!-- Term Construction -->
+                    <div class="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+                        <h4 class="font-bold text-lg text-cyan-900 mb-3">2. Term aufstellen</h4>
+                        <p class="text-sm mb-4">Welcher Term passt zu diesem Baum?</p>
+                        
+                        <div class="flex items-center gap-2 text-lg font-bold flex-wrap justify-center">
+                            <div class="tree-node-given !relative !inset-auto w-12">-252</div>
+                            <span>$:$</span>
+                            <span>$($</span>
+                            <div class="tree-node-given !relative !inset-auto">-14</div>
+                            <span>$\cdot$</span>
+                            <input type="text" id="b_term_1" class="w-16 p-2 border-2 border-cyan-400 rounded text-center focus:ring-2 focus:ring-cyan-500 feedback-transition" placeholder="?">
+                            <span>$)$</span>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button onclick="checkTermB()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition">Term prüfen</button>
+                            <div id="fb_term_b" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+
+                    <!-- Word Form -->
+                    <div id="section_word_b" class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 hidden opacity-0 feedback-transition">
+                        <h4 class="font-bold text-lg text-indigo-900 mb-2">3. In Wortform beschreiben</h4>
+                        <p class="text-sm mb-3">Wie heißt dieser Term in Fachsprache? Achte wieder auf die letzte Rechenart!</p>
+                        
+                        <textarea id="b_word" rows="3" class="w-full p-3 border-2 border-indigo-300 rounded shadow-inner focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="Der Term ist ..."></textarea>
+                        
+                        <div class="mt-3">
+                            <button onclick="checkWordB()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Wortform prüfen</button>
+                            <div id="fb_word_b" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Perfekt gelöst! Musterlösung</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div>
+                    <h4 class="font-bold text-emerald-900 mb-2 text-lg">Aufgabe a)</h4>
+                    <p class="mb-1"><strong>Term:</strong> $8 \cdot [13 \cdot (-4)]$</p>
+                    <p class="mb-4"><strong>Wortform:</strong> "Das Produkt aus 8 und dem Produkt von 13 und -4."</p>
+                    <p class="text-emerald-700 text-sm italic">Rechenweg: $8 \cdot \text{Mitte} = -416 \rightarrow \text{Mitte} = -52$.<br> $\text{LinksOben} \cdot (-4) = -52 \rightarrow \text{LinksOben} = 13$.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-900 mb-2 text-lg">Aufgabe b)</h4>
+                    <p class="mb-1"><strong>Term:</strong> $-252 : [(-14) \cdot (-3)]$</p>
+                    <p class="mb-4"><strong>Wortform:</strong> "Der Quotient aus -252 und dem Produkt von -14 und -3."</p>
+                    <p class="text-emerald-700 text-sm italic">Rechenweg: $-252 : \text{Mitte} = -6 \rightarrow \text{Mitte} = 42$.<br> $-14 \cdot \text{RechtsOben} = 42 \rightarrow \text{RechtsOben} = -3$.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function parseNum(val) {
+            if (typeof val !== 'string') return NaN;
+            return parseFloat(val.trim().replace(',', '.'));
+        }
+
+        function isCorrect(id, target) {
+            const val = document.getElementById(id).value;
+            return parseNum(val) === target;
+        }
+
+        function setStyle(id, isValid) {
+            const el = document.getElementById(id);
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isValid) el.classList.add('correct-bg');
+            else el.classList.add('wrong-bg');
+        }
+
+        function showFb(id, msg, isSuccess) {
+            const el = document.getElementById(id);
+            el.innerHTML = isSuccess ? `✅ ${msg}` : `💡 <strong>Tipp:</strong> ${msg}`;
+            el.className = `mt-3 block p-3 rounded-lg text-sm shadow-sm ${isSuccess ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}`;
+            el.classList.remove('hidden');
+            
+            // WICHTIG: Damit MathJax die neu eingefügten $...$ Formeln im dynamischen Feedback sofort rendert!
+            if (window.MathJax) {
+                MathJax.typesetPromise([el]).catch((err) => console.log(err.message));
+            }
+        }
+
+        let a_done = false;
+        let b_done = false;
+
+        function checkAllDone() {
+            if (a_done && b_done) {
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                const sol = document.getElementById('solution_section');
+                sol.classList.remove('hidden');
+                setTimeout(() => sol.classList.remove('opacity-0'), 50);
+                setTimeout(() => sol.scrollIntoView({ behavior: 'smooth' }), 300);
+            }
+        }
+
+        // --- Task A ---
+        function checkTreeA() {
+            let midCorrect = isCorrect('a_mid', -52);
+            let topCorrect = isCorrect('a_topL', 13);
+            
+            setStyle('a_mid', midCorrect);
+            setStyle('a_topL', topCorrect);
+
+            if (!midCorrect) {
+                showFb('fb_tree_a', "Schau dir die unterste Rechnung an: $8 \\cdot [?] = -416$. Wie groß muss die orange Box in der Mitte sein? (Rechne die Umkehraufgabe: Geteilt!).", false);
+            } else if (!topCorrect) {
+                showFb('fb_tree_a', "Die Mitte ($-52$) stimmt! Jetzt die obere Rechnung: $[?] \\cdot (-4) = -52$. Welches Vorzeichen braucht das Ergebnis? Teile $-52$ durch $-4$.", false);
+            } else {
+                showFb('fb_tree_a', "Perfekt! Der Baum ist komplett richtig gelöst. Gehe nun zum Term über.", true);
+                const section = document.getElementById('section_term_a');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            }
+        }
+
+        function checkTermA() {
+            if (isCorrect('a_term_1', 13)) {
+                setStyle('a_term_1', true);
+                showFb('fb_term_a', "Richtig eingesetzt! Da die innere Klammer eine Malaufgabe ist, muss sie zuerst berechnet werden.", true);
+                const section = document.getElementById('section_word_a');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            } else {
+                setStyle('a_term_1', false);
+                showFb('fb_term_a', "Schau noch einmal in den Baum ganz oben links. Welche Zahl fehlt hier in der Klammer?", false);
+            }
+        }
+
+        function checkWordA() {
+            const text = document.getElementById('a_word').value.trim();
+            const el = document.getElementById('a_word');
+            
+            if (text.length < 10) {
+                showFb('fb_word_a', "Bitte schreibe einen vollständigen Satz.", false);
+                return;
+            }
+
+            // Regex for Multiplication (Produkt) + Numbers
+            const hasMul = /(?=.*([pP]rodukt|[mM]ultipliziert|[mM]al|[fF]aktor))/;
+            const hasNum = /(?=.*8)(?=.*13)(?=.*4)/;
+
+            if (!hasMul.test(text)) {
+                el.classList.add('wrong-bg');
+                showFb('fb_word_a', "Was ist die Hauptrechnung (ganz unten im Baum)? Wie nennt man das Ergebnis einer Malaufgabe in der Fachsprache?", false);
+            } else if (!hasNum.test(text)) {
+                el.classList.add('wrong-bg');
+                showFb('fb_word_a', "Du hast den Fachbegriff gefunden, super! Vergiss nicht, alle vorkommenden Zahlen ($8$, $13$, $-4$) im Text zu erwähnen.", false);
+            } else {
+                el.classList.remove('wrong-bg');
+                el.classList.add('correct-bg');
+                showFb('fb_word_a', "Hervorragend beschrieben! Das 'Produkt' bildet hier das Hauptgerüst.", true);
+                a_done = true;
+                checkAllDone();
+            }
+        }
+
+        // --- Task B ---
+        function checkTreeB() {
+            let midCorrect = isCorrect('b_mid', 42);
+            let topCorrect = isCorrect('b_topR', -3);
+            
+            setStyle('b_mid', midCorrect);
+            setStyle('b_topR', topCorrect);
+
+            if (!midCorrect) {
+                showFb('fb_tree_b', "Schau nach ganz unten: $-252 : [?] = -6$. (Minus geteilt durch Minus ergibt Plus. Rechne also $252 : 6$ für die Lücke in der Mitte).", false);
+            } else if (!topCorrect) {
+                showFb('fb_tree_b', "Die Mitte ($42$) stimmt! Nun nach oben: $-14 \\cdot [?] = 42$. Welches Vorzeichen muss die gesuchte Zahl haben, damit am Ende Plus herauskommt?", false);
+            } else {
+                showFb('fb_tree_b', "Klasse, alle Lücken gefüllt!", true);
+                const section = document.getElementById('section_term_b');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            }
+        }
+
+        function checkTermB() {
+            if (isCorrect('b_term_1', -3)) {
+                setStyle('b_term_1', true);
+                showFb('fb_term_b', "Exakt! Die Klammer schützt die innere Malaufgabe.", true);
+                const section = document.getElementById('section_word_b');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            } else {
+                setStyle('b_term_1', false);
+                showFb('fb_term_b', "Schau auf den Baum oben rechts. Welche Zahl gehört in diese Lücke?", false);
+            }
+        }
+
+        function checkWordB() {
+            const text = document.getElementById('b_word').value.trim();
+            const el = document.getElementById('b_word');
+            
+            if (text.length < 10) {
+                showFb('fb_word_b', "Bitte schreibe einen vollständigen Satz.", false);
+                return;
+            }
+
+            // Regex for Division (Quotient) and Multiplication (Produkt) + Numbers
+            const hasDiv = /(?=.*([qQ]uotient|[dD]ividiert|[gG]eteilt|[bB]ruch))/;
+            const hasMul = /(?=.*([pP]rodukt|[mM]ultipliziert|[mM]al|[fF]aktor))/;
+            const hasNum = /(?=.*252)(?=.*14)(?=.*3)/;
+
+            if (!hasDiv.test(text)) {
+                el.classList.add('wrong-bg');
+                showFb('fb_word_b', "Wie lautet der Fachbegriff für die Hauptrechnung (die geteilt-Rechnung ganz unten)?", false);
+            } else if (!hasMul.test(text)) {
+                el.classList.add('wrong-bg');
+                showFb('fb_word_b', "Richtig, es ist ein Quotient. Aber wodurch wird geteilt? Die Klammer ist eine Malaufgabe. Wie nennt man das Ergebnis davon?", false);
+            } else if (!hasNum.test(text)) {
+                el.classList.add('wrong-bg');
+                showFb('fb_word_b', "Die Fachbegriffe stimmen! Bitte nenne jetzt noch die genauen Zahlen aus dem Term ($-252$, $-14$, $-3$) in deiner Beschreibung.", false);
+            } else {
+                el.classList.remove('wrong-bg');
+                el.classList.add('correct-bg');
+                showFb('fb_word_b', "Brillant formuliert! Du hast die Struktur des Rechenbaums perfekt in einen Satz übersetzt.", true);
+                b_done = true;
+                checkAllDone();
+            }
+        }
+    </script>
+</body>
+</html>

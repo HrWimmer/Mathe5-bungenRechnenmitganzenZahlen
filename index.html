@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathe 5 - Übungsmenü</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #f8fafc, #e2e8f0);
+            min-height: 100-vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+        }
+        .number-badge {
+            background: rgba(37, 99, 235, 0.1);
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-4 gradient-text">Mathematik Klasse 5</h1>
+            <p class="text-xl text-slate-600">Übungsphase: Verbindung der Grundrechenarten</p>
+            <div class="mt-4 flex justify-center gap-2">
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">Multiplikation</span>
+                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">Division</span>
+                <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-semibold">Ganzer Zahlen</span>
+            </div>
+        </header>
+
+        <!-- Main Menu -->
+        <div class="exercise-grid">
+            
+            <!-- Übung 1 -->
+            <a href="Übung151Nr1.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 151</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">📝</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 151/1</h3>
+                <p class="text-sm text-slate-500 mb-4">Einstieg in die Vorrangregeln und KlaPoPS.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 2 -->
+            <a href="Übung151Nr3.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 151</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🔢</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 151/3</h3>
+                <p class="text-sm text-slate-500 mb-4">Vertiefung der Rechengesetze.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 3 -->
+            <a href="Übung152Nr4.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 152</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">⚖️</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 152/4</h3>
+                <p class="text-sm text-slate-500 mb-4">Klammern setzen und auflösen.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 4 -->
+            <a href="Übung152Nr8.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 152</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🔍</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 152/8</h3>
+                <p class="text-sm text-slate-500 mb-4">Fehlersuche in Termberechnungen.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 5 -->
+            <a href="Übung153Nr11.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 153</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🧩</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 153/11</h3>
+                <p class="text-sm text-slate-500 mb-4">Komplexere Terme mit mehreren Klammern.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 6 -->
+            <a href="Übung154Nr16.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 154</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">💡</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 154/16</h3>
+                <p class="text-sm text-slate-500 mb-4">Sachaufgaben und Transfer.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 7 -->
+            <a href="Übung154Nr17.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 154</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🚀</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 154/17</h3>
+                <p class="text-sm text-slate-500 mb-4">Herausfordernde Rechenwege.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Übung 8 -->
+            <a href="Übung154Nr18.html" class="glass-card p-6 rounded-2xl block group">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="number-badge px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">Seite 154</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">🏆</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Übung S. 154/18</h3>
+                <p class="text-sm text-slate-500 mb-4">Abschlussübung zum Kapitel.</p>
+                <div class="flex items-center text-blue-600 font-semibold text-sm">
+                    Starten <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+            <!-- Bonusübungen -->
+            <a href="Bonusübungen.html" class="glass-card p-6 rounded-2xl block group border-amber-200 bg-amber-50/50 col-span-1 md:col-span-2 lg:col-span-1">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border border-amber-200">Zusatz</span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform">⭐</span>
+                </div>
+                <h3 class="text-xl font-bold text-amber-800 mb-2">Bonusübungen</h3>
+                <p class="text-sm text-amber-700 mb-4">Für echte Profis: Knifflige Aufgaben zum Knobeln.</p>
+                <div class="flex items-center text-amber-600 font-semibold text-sm">
+                    Jetzt herausfordern <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-20 text-center text-slate-400 text-sm">
+            <p>&copy; 2026 Schule • Mathe 5 • Viel Erfolg beim Lernen!</p>
+        </footer>
+    </div>
+
+</body>
+</html>

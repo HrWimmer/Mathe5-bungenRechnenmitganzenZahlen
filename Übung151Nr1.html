@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorrangregeln - Übung S. 151/1</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom Styles for smooth transitions */
+        .feedback-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7; border-color: #22c55e; } /* Tailwind green-100 & 500 */
+        .wrong-bg { background-color: #fee2e2; border-color: #ef4444; }   /* Tailwind red-100 & 500 */
+        
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header & Prior Knowledge -->
+    <header class="bg-blue-600 text-white py-8 shadow-md">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Vorrangregeln: Übung S. 151 / 1</h2>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card: KlaPoPS -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🧠</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Erinnerung: Die KlaPoPS-Regel</h3>
+                    <p class="mb-2">Bevor wir starten, ruf dir unsere wichtigste Regel ins Gedächtnis:</p>
+                    <ul class="list-disc list-inside space-y-1 font-semibold text-blue-700 bg-blue-50 p-4 rounded-lg inline-block">
+                        <li><strong>Kla</strong>mmerrechnung zuerst! (Innere vor äußere Klammern)</li>
+                        <li><strong>Po</strong>tenzrechnung</li>
+                        <li><strong>P</strong>unktrechnung ($ \cdot $ und $ : $)</li>
+                        <li><strong>S</strong>trichrechnung ($ + $ und $ - $)</li>
+                    </ul>
+                    <p class="mt-2 text-sm text-slate-500">Und ansonsten rechnen wir fair wie beim Lesen: <strong>Von links nach rechts!</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 1: Tasks a to d -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2">Aufgabenblock 1: Gleiche Zahlen, andere Klammern</h3>
+            <p class="mb-6 text-slate-600">Berechne die Aufgaben. Wir schauen uns die schwierigen Fälle gemeinsam Schritt für Schritt an.</p>
+
+            <!-- Task a (Guided) -->
+            <div class="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="font-bold text-lg mb-2">a) $3 \cdot 15 - 5 \cdot (-8)$</div>
+                
+                <div class="space-y-4">
+                    <!-- Step 1: Dropdown -->
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Schritt 1: Was musst du hier aufgrund der Vorrangregeln zuerst rechnen?</label>
+                        <select id="a_step1" class="w-full md:w-1/2 p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500 feedback-transition">
+                            <option value="">-- Bitte wählen --</option>
+                            <option value="strich">Die Subtraktion in der Mitte (15 - 5)</option>
+                            <option value="punkt">Beide Punktrechnungen gleichzeitig</option>
+                            <option value="klammer">Die Klammer (-8) auflösen</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: Input -->
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Schritt 2: Wir rechnen die Multiplikationen aus.</span>
+                        <br class="hidden md:block">
+                        <span>$45 - $</span>
+                        <input type="number" id="a_step2" class="w-24 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span class="text-sm italic text-slate-500">(Tipp: Was ergibt $5 \cdot (-8)$?)</span>
+                    </div>
+
+                    <!-- Step 3: Result -->
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold">Endergebnis:</span>
+                        <input type="number" id="a_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="Ergebnis">
+                    </div>
+
+                    <button onclick="checkTaskA()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    <div id="feedback_a" class="text-sm mt-2 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Task b (Guided) -->
+            <div class="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="font-bold text-lg mb-2">b) $3 \cdot (15 - 5) \cdot (-8)$</div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Schritt 1 (Klammer auflösen): $3 \cdot$ </span>
+                        <input type="number" id="b_step1" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span>$\cdot (-8)$</span>
+                    </div>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Schritt 2 (Von links nach rechts): </span>
+                        <input type="number" id="b_step2" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span>$\cdot (-8)$</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold">Endergebnis:</span>
+                        <input type="number" id="b_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="Ergebnis">
+                    </div>
+                    <button onclick="checkTaskB()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    <div id="feedback_b" class="text-sm mt-2 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Task c (Guided) -->
+            <div class="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="font-bold text-lg mb-2">c) $3 \cdot [15 - 5 \cdot (-8)]$</div>
+                <p class="text-sm text-slate-600 mb-4">Hier haben wir eckige und runde Klammern. Kümmern wir uns zuerst um das Innere der eckigen Klammer!</p>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Innerhalb der eckigen Klammer gilt Punkt-vor-Strich: $[15 - $</span>
+                        <input type="number" id="c_step1" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span>$]$</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Wir vereinfachen die eckige Klammer weiter: $[15 + 40] =$ </span>
+                        <input type="number" id="c_step2" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold">Endergebnis ($3 \cdot \text{Klammerwert}$):</span>
+                        <input type="number" id="c_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="Ergebnis">
+                    </div>
+
+                    <button onclick="checkTaskC()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    <div id="feedback_c" class="text-sm mt-2 hidden"></div>
+                </div>
+            </div>
+
+            <!-- Task d (Guided) -->
+            <div class="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="font-bold text-lg mb-2">d) $(3 \cdot 15 - 5) \cdot (-8)$</div>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Schritt 1 (Punktrechnung in Klammer): $($</span>
+                        <input type="number" id="d_step1" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span>$- 5) \cdot (-8)$</span>
+                    </div>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span>Schritt 2 (Klammer ausrechnen): </span>
+                        <input type="number" id="d_step2" class="w-20 p-2 border rounded shadow-sm text-center feedback-transition" placeholder="?">
+                        <span>$\cdot (-8)$</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-bold">Endergebnis:</span>
+                        <input type="number" id="d_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="Ergebnis">
+                    </div>
+                    <button onclick="checkTaskD()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    <div id="feedback_d" class="text-sm mt-2 hidden"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Tasks e to h -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2">Aufgabenblock 2</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Task e -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="font-bold text-lg mb-2">e) $4 + 6 \cdot 8 - 12$</div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>1. Punktrechnung: $4 +$</span>
+                            <input type="number" id="e_step1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- 12$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>2. Links nach rechts:</span>
+                            <input type="number" id="e_step2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- 12$</span>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="number" id="e_final" class="w-24 p-2 border rounded shadow-sm font-bold text-center feedback-transition" placeholder="Ergebnis">
+                        </div>
+                        <button onclick="checkTaskE()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        <div id="feedback_e" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task f -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="font-bold text-lg mb-2">f) $4 + (6 \cdot 8) - 12$</div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>1. Klammer: $4 +$</span>
+                            <input type="number" id="f_step1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- 12$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>2. Links nach rechts:</span>
+                            <input type="number" id="f_step2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- 12$</span>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="number" id="f_final" class="w-24 p-2 border rounded shadow-sm font-bold text-center feedback-transition" placeholder="Ergebnis">
+                        </div>
+                        <button onclick="checkTaskF()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        <div id="feedback_f" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task g -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="font-bold text-lg mb-2">g) $(4 + 6) \cdot 8 - 12$</div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>1. Klammer:</span>
+                            <input type="number" id="g_step1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$\cdot 8 - 12$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>2. Punktrechnung:</span>
+                            <input type="number" id="g_step2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- 12$</span>
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="number" id="g_final" class="w-24 p-2 border rounded shadow-sm font-bold text-center feedback-transition" placeholder="Ergebnis">
+                        </div>
+                        <button onclick="checkTaskG()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        <div id="feedback_g" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task h -->
+                <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="font-bold text-lg mb-2">h) $(4 + 6) \cdot (8 - 12)$</div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>1. Erste Klammer:</span>
+                            <input type="number" id="h_step1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$\cdot (8 - 12)$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>2. Zweite Klammer: $10 \cdot$</span>
+                            <input type="number" id="h_step2" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="number" id="h_final" class="w-24 p-2 border rounded shadow-sm font-bold text-center feedback-transition" placeholder="Ergebnis">
+                        </div>
+                        <button onclick="checkTaskH()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        <div id="feedback_h" class="text-sm mt-2 hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Socratic Reflection Task -->
+        <section class="bg-blue-50 border-2 border-blue-200 p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
+                <span>🕵️</span> Vergleiche und Beschreibe
+            </h3>
+            <p class="mb-4">Schau dir die Aufgaben a) bis d) sowie e) bis h) noch einmal genau an. Die beteiligten Zahlen sind in jeder Gruppe völlig identisch.</p>
+            <p class="font-bold mb-2">Beschreibe in eigenen Worten: Was fällt dir auf? Warum sind die Ergebnisse so unterschiedlich?</p>
+            
+            <textarea id="reflection_text" rows="4" class="w-full p-3 border border-blue-300 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 feedback-transition" placeholder="Mir fällt auf, dass..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Glückwunsch! Hier ist die Musterlösung</h3>
+            <p class="mb-4 text-emerald-700">Du hast die Übung S. 151/1 erfolgreich gemeistert. Vergleiche deinen Rechenweg mit der sauberen Schreibweise:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div>
+                    <ul class="space-y-4">
+                        <li><strong>a)</strong> $3 \cdot 15 - 5 \cdot (-8)$ <br> $= 45 - (-40)$ <br> $= 45 + 40 = \mathbf{85}$</li>
+                        <li><strong>b)</strong> $3 \cdot (15 - 5) \cdot (-8)$ <br> $= 3 \cdot 10 \cdot (-8)$ <br> $= 30 \cdot (-8) = \mathbf{-240}$</li>
+                        <li><strong>c)</strong> $3 \cdot [15 - 5 \cdot (-8)]$ <br> $= 3 \cdot [15 - (-40)]$ <br> $= 3 \cdot [15 + 40]$ <br> $= 3 \cdot 55 = \mathbf{165}$</li>
+                        <li><strong>d)</strong> $(3 \cdot 15 - 5) \cdot (-8)$ <br> $= (45 - 5) \cdot (-8)$ <br> $= 40 \cdot (-8) = \mathbf{-320}$</li>
+                    </ul>
+                </div>
+                <div>
+                    <ul class="space-y-4">
+                        <li><strong>e)</strong> $4 + 6 \cdot 8 - 12$ <br> $= 4 + 48 - 12$ <br> $= 52 - 12 = \mathbf{40}$</li>
+                        <li><strong>f)</strong> $4 + (6 \cdot 8) - 12$ <br> $= 4 + 48 - 12 = \mathbf{40}$ <br> <em class="text-slate-500">(Klammer unnötig wegen Punkt-vor-Strich)</em></li>
+                        <li><strong>g)</strong> $(4 + 6) \cdot 8 - 12$ <br> $= 10 \cdot 8 - 12$ <br> $= 80 - 12 = \mathbf{68}$</li>
+                        <li><strong>h)</strong> $(4 + 6) \cdot (8 - 12)$ <br> $= 10 \cdot (-4) = \mathbf{-40}$</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 p-4 bg-emerald-100 rounded-lg text-emerald-800 font-semibold border border-emerald-300">
+                <strong>Erkenntnis:</strong> Durch das Setzen von Klammern wird die gewohnte Reihenfolge (KlaPoPS) durchbrochen. Dadurch werden andere Teilterme zuerst berechnet, was zu komplett unterschiedlichen Ergebnissen führt.
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+
+        // Checks number input with slight tolerance (though we use integers here mostly, it's good practice as requested)
+        function isCorrectNum(inputValue, targetValue, tolerance = 0.01) {
+            if (inputValue === "" || isNaN(inputValue)) return false;
+            return Math.abs(parseFloat(inputValue) - targetValue) <= tolerance;
+        }
+
+        function setFeedbackStyle(elementId, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isCorrect) {
+                el.classList.add('correct-bg');
+            } else {
+                el.classList.add('wrong-bg');
+            }
+        }
+
+        function showMessage(elementId, msg, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = isCorrect ? `✅ ${msg}` : `💡 ${msg}`;
+            el.className = `text-sm mt-2 block p-2 rounded-lg ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+        }
+
+        // --- Task Logic ---
+
+        function checkTaskA() {
+            const step1 = document.getElementById('a_step1').value;
+            const step2 = document.getElementById('a_step2').value;
+            const final = document.getElementById('a_final').value;
+            
+            let allCorrect = true;
+            let feedback = "";
+
+            if (step1 === 'punkt') {
+                setFeedbackStyle('a_step1', true);
+            } else {
+                setFeedbackStyle('a_step1', false);
+                allCorrect = false;
+                feedback += "Tipp Schritt 1: Denk an KlaPoPS. Hier gibt es keine echten Klammerterme (nur Vorzeichen), also greift Punkt-vor-Strich. ";
+            }
+
+            if (isCorrectNum(step2, -40)) {
+                setFeedbackStyle('a_step2', true);
+            } else {
+                setFeedbackStyle('a_step2', false);
+                allCorrect = false;
+                if(step2 == 40) feedback += "Tipp Schritt 2: Achte auf das Vorzeichen bei der Multiplikation: $5 \cdot (-8)$! ";
+                else feedback += "Tipp Schritt 2: Rechne $5 \cdot 8$ und setze das richtige Vorzeichen. ";
+            }
+
+            if (isCorrectNum(final, 85)) {
+                setFeedbackStyle('a_final', true);
+            } else {
+                setFeedbackStyle('a_final', false);
+                allCorrect = false;
+                if(final == 5) feedback += "Tipp Endergebnis: Du hast $45 - 40$ gerechnet. Aber es heißt $45 - (-40)$. Was passiert bei Minus vor einem Minus?";
+                else feedback += "Tipp Endergebnis: Rechne $45 - (-40)$, also $45 + 40$. ";
+            }
+
+            if (allCorrect) {
+                showMessage('feedback_a', "Super! Alles richtig schrittweise gelöst.", true);
+            } else {
+                showMessage('feedback_a', feedback, false);
+            }
+        }
+
+        function checkTaskC() {
+            const step1 = document.getElementById('c_step1').value;
+            const step2 = document.getElementById('c_step2').value;
+            const final = document.getElementById('c_final').value;
+            
+            let allCorrect = true;
+            let feedback = "";
+
+            if (isCorrectNum(step1, -40)) {
+                setFeedbackStyle('c_step1', true);
+            } else {
+                setFeedbackStyle('c_step1', false);
+                allCorrect = false;
+                feedback += "Tipp Schritt 1: $5 \cdot (-8)$ ergibt eine negative Zahl. ";
+            }
+
+            if (isCorrectNum(step2, 55)) {
+                setFeedbackStyle('c_step2', true);
+            } else {
+                setFeedbackStyle('c_step2', false);
+                allCorrect = false;
+                if(step2 == -25) feedback += "Tipp Schritt 2: Vorsicht mit den Vorzeichen! $15 - (-40)$ wird zu $15 + 40$. ";
+                else feedback += "Tipp Schritt 2: Löse die Rechnung $15 - (-40)$ auf. ";
+            }
+
+            if (isCorrectNum(final, 165)) {
+                setFeedbackStyle('c_final', true);
+            } else {
+                setFeedbackStyle('c_final', false);
+                allCorrect = false;
+                feedback += "Tipp Endergebnis: Multipliziere die $3$ von ganz vorne mit deinem Ergebnis aus der eckigen Klammer. ";
+            }
+
+            if (allCorrect) {
+                showMessage('feedback_c', "Perfekt durch die Klammern manövriert!", true);
+            } else {
+                showMessage('feedback_c', feedback, false);
+            }
+        }
+
+        function checkTaskB() {
+            const step1 = document.getElementById('b_step1').value;
+            const step2 = document.getElementById('b_step2').value;
+            const final = document.getElementById('b_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 10)) { setFeedbackStyle('b_step1', true); } else { setFeedbackStyle('b_step1', false); allCorrect = false; feedback += "Tipp Schritt 1: Rechne zuerst die Klammer $(15 - 5)$ aus. "; }
+            if(isCorrectNum(step2, 30)) { setFeedbackStyle('b_step2', true); } else { setFeedbackStyle('b_step2', false); allCorrect = false; feedback += "Tipp Schritt 2: Rechne von links nach rechts weiter: $3 \cdot 10$. "; }
+            if(isCorrectNum(final, -240)) { setFeedbackStyle('b_final', true); } else { setFeedbackStyle('b_final', false); allCorrect = false; feedback += "Tipp Endergebnis: Multipliziere $30 \cdot (-8)$ und achte aufs Vorzeichen. "; }
+            
+            if(allCorrect) showMessage('feedback_b', "Super! Schritt-für-Schritt richtig.", true);
+            else showMessage('feedback_b', feedback, false);
+        }
+
+        function checkTaskD() {
+            const step1 = document.getElementById('d_step1').value;
+            const step2 = document.getElementById('d_step2').value;
+            const final = document.getElementById('d_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 45)) { setFeedbackStyle('d_step1', true); } else { setFeedbackStyle('d_step1', false); allCorrect = false; feedback += "Tipp Schritt 1: Punkt-vor-Strich in der Klammer ($3 \cdot 15$). "; }
+            if(isCorrectNum(step2, 40)) { setFeedbackStyle('d_step2', true); } else { setFeedbackStyle('d_step2', false); allCorrect = false; feedback += "Tipp Schritt 2: Rechne jetzt die Klammer fertig ($45 - 5$). "; }
+            if(isCorrectNum(final, -320)) { setFeedbackStyle('d_final', true); } else { setFeedbackStyle('d_final', false); allCorrect = false; feedback += "Tipp Endergebnis: Multipliziere dein Klammerergebnis mit (-8). "; }
+            
+            if(allCorrect) showMessage('feedback_d', "Stark gemacht!", true);
+            else showMessage('feedback_d', feedback, false);
+        }
+
+        function checkTaskE() {
+            const step1 = document.getElementById('e_step1').value;
+            const step2 = document.getElementById('e_step2').value;
+            const final = document.getElementById('e_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 48)) { setFeedbackStyle('e_step1', true); } else { setFeedbackStyle('e_step1', false); allCorrect = false; feedback += "Tipp 1: KlaPoPS! Punkt-vor-Strich ($6 \cdot 8$). "; }
+            if(isCorrectNum(step2, 52)) { setFeedbackStyle('e_step2', true); } else { setFeedbackStyle('e_step2', false); allCorrect = false; feedback += "Tipp 2: Jetzt von links nach rechts ($4 + 48$). "; }
+            if(isCorrectNum(final, 40)) { setFeedbackStyle('e_final', true); } else { setFeedbackStyle('e_final', false); allCorrect = false; feedback += "Tipp 3: Die letzte Rechnung ist $52 - 12$. "; }
+            
+            if(allCorrect) showMessage('feedback_e', "Perfekt!", true); else showMessage('feedback_e', feedback, false);
+        }
+
+        function checkTaskF() {
+            const step1 = document.getElementById('f_step1').value;
+            const step2 = document.getElementById('f_step2').value;
+            const final = document.getElementById('f_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 48)) { setFeedbackStyle('f_step1', true); } else { setFeedbackStyle('f_step1', false); allCorrect = false; feedback += "Tipp 1: Klammer zuerst ($6 \cdot 8$). "; }
+            if(isCorrectNum(step2, 52)) { setFeedbackStyle('f_step2', true); } else { setFeedbackStyle('f_step2', false); allCorrect = false; feedback += "Tipp 2: Von links nach rechts ($4 + 48$). "; }
+            if(isCorrectNum(final, 40)) { setFeedbackStyle('f_final', true); } else { setFeedbackStyle('f_final', false); allCorrect = false; feedback += "Tipp 3: $52 - 12$. "; }
+            
+            if(allCorrect) showMessage('feedback_f', "Korrekt! Hast du bemerkt, dass e und f dasselbe sind?", true); else showMessage('feedback_f', feedback, false);
+        }
+
+        function checkTaskG() {
+            const step1 = document.getElementById('g_step1').value;
+            const step2 = document.getElementById('g_step2').value;
+            const final = document.getElementById('g_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 10)) { setFeedbackStyle('g_step1', true); } else { setFeedbackStyle('g_step1', false); allCorrect = false; feedback += "Tipp 1: Klammer zuerst ($4 + 6$). "; }
+            if(isCorrectNum(step2, 80)) { setFeedbackStyle('g_step2', true); } else { setFeedbackStyle('g_step2', false); allCorrect = false; feedback += "Tipp 2: Punkt-vor-Strich ($10 \cdot 8$). "; }
+            if(isCorrectNum(final, 68)) { setFeedbackStyle('g_final', true); } else { setFeedbackStyle('g_final', false); allCorrect = false; feedback += "Tipp 3: $80 - 12$. "; }
+            
+            if(allCorrect) showMessage('feedback_g', "Klasse!", true); else showMessage('feedback_g', feedback, false);
+        }
+
+        function checkTaskH() {
+            const step1 = document.getElementById('h_step1').value;
+            const step2 = document.getElementById('h_step2').value;
+            const final = document.getElementById('h_final').value;
+            let allCorrect = true; let feedback = "";
+            
+            if(isCorrectNum(step1, 10)) { setFeedbackStyle('h_step1', true); } else { setFeedbackStyle('h_step1', false); allCorrect = false; feedback += "Tipp 1: Erste Klammer ($4 + 6$). "; }
+            if(isCorrectNum(step2, -4)) { setFeedbackStyle('h_step2', true); } else { setFeedbackStyle('h_step2', false); allCorrect = false; feedback += "Tipp 2: Zweite Klammer ($8 - 12$). "; }
+            if(isCorrectNum(final, -40)) { setFeedbackStyle('h_final', true); } else { setFeedbackStyle('h_final', false); allCorrect = false; feedback += "Tipp 3: Multipliziere $10 \cdot (-4)$. "; }
+            
+            if(allCorrect) showMessage('feedback_h', "Fantastisch!", true); else showMessage('feedback_h', feedback, false);
+        }
+
+        function checkSimpleTask(inputId, target, feedbackId) {
+            const val = document.getElementById(inputId).value;
+            if (isCorrectNum(val, target)) {
+                setFeedbackStyle(inputId, true);
+                showMessage(feedbackId, "Korrekt!", true);
+            } else {
+                setFeedbackStyle(inputId, false);
+                showMessage(feedbackId, "Leider falsch. Prüfe die Reihenfolge (KlaPoPS) und Vorzeichen.", false);
+            }
+        }
+
+        // --- Socratic Reflection (Regex Based) ---
+        
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const feedbackBox = document.getElementById('reflection_feedback');
+            const textAreaEl = document.getElementById('reflection_text');
+            
+            if (text.length < 10) {
+                feedbackBox.innerHTML = "💡 Bitte schreibe einen vollständigen Satz auf, was du beobachtest.";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-amber-100 text-amber-800 block";
+                return;
+            }
+
+            // Lookaheads for logical steps
+            // 1. Mentioning brackets (Klammern, Klammersetzung)
+            const regexKlammer = /(?=.*[kK]lammer)/;
+            
+            // 2. Mentioning result/value/order changing (Ergebnis, Wert, Reihenfolge, ändern, unterschiedlich)
+            const regexErgebnis = /(?=.*([eE]rgebnis|[lL]ösung|[wW]ert|[rR]eihenfolge))/;
+            const regexUnterschied = /(?=.*([uU]nterschied|[vV]eränder|[aA]nder|[uU]ngleich|[kK]omplett andere))/;
+
+            const hasKlammer = regexKlammer.test(text);
+            const hasErgebnis = regexErgebnis.test(text);
+            const hasUnterschied = regexUnterschied.test(text);
+
+            if (!hasKlammer) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Sokratischer Tipp:</strong> Schau dir die Aufgaben genau an. Die Zahlen und Rechenzeichen (wie + und *) sind gleich. Welches mathematische Symbol (z.B. in Aufgabe b oder c) wird verschoben oder neu hinzugefügt?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-red-100 text-red-800 block";
+            } 
+            else if (!(hasErgebnis && hasUnterschied)) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Sokratischer Tipp:</strong> Gut, du hast die Klammern bemerkt! Aber welche Auswirkung haben diese Klammern auf die Rechen-Reihenfolge und damit auf das Endergebnis?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-orange-100 text-orange-800 block";
+            } 
+            else {
+                // Success!
+                textAreaEl.classList.remove('wrong-bg');
+                textAreaEl.classList.add('correct-bg');
+                feedbackBox.innerHTML = "✅ <strong>Brillant erkannt!</strong> Du hast verstanden, dass Klammern die normale Vorrangregel aufbrechen und somit die Reihenfolge der Berechnung verändern. Das führt zu völlig anderen Ergebnissen.";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-green-100 text-green-800 block";
+                
+                triggerConfetti();
+                unlockSolution();
+            }
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#3b82f6', '#10b981', '#f59e0b']
+            });
+        }
+
+        function unlockSolution() {
+            const solSection = document.getElementById('solution_section');
+            solSection.classList.remove('hidden');
+            // Small delay to allow display:block to apply before changing opacity for transition
+            setTimeout(() => {
+                solSection.classList.remove('opacity-0');
+            }, 50);
+            
+            // Scroll to solution
+            setTimeout(() => {
+                solSection.scrollIntoView({ behavior: 'smooth' });
+                // Re-typeset mathjax in the revealed section just in case
+                if(window.MathJax) {
+                    MathJax.typesetPromise([solSection]).catch((err) => console.log(err.message));
+                }
+            }, 300);
+        }
+
+    </script>
+</body>
+</html>

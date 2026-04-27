@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperaturumrechnung - Übung S. 154/18</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.4s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; } 
+        .wrong-bg { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }   
+        
+        input[type="text"], input[type="number"], select {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Table input styles */
+        .tbl-input {
+            width: 100%;
+            min-width: 60px;
+            padding: 0.5rem;
+            border: 2px solid #bae6fd; /* sky-200 */
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+        .tbl-input:focus {
+            outline: none;
+            border-color: #38bdf8; /* sky-400 */
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-sky-700 text-white py-8 shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Weltweites Wetter: Übung S. 154 / 18</h2>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🌡️</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Fahrenheit vs. Celsius</h3>
+                    <p class="mb-2">In Nordamerika nutzt man für das Wetter nicht Grad Celsius ($^\circ\text{C}$), sondern Grad Fahrenheit ($^\circ\text{F}$). Die Umrechnung ist eine tolle Übung für Vorrangregeln!</p>
+                    <div class="bg-sky-50 p-4 rounded-lg border border-sky-200 mt-2 font-serif italic text-sky-900">
+                        "Man erhält die Temperatur in Celsius, indem man von der Temperatur in Fahrenheit 32 subtrahiert, das Ergebnis mit 5 multipliziert und anschließend durch 9 dividiert."
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vorbereitung: Term aufstellen -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Schritt 1: Die Übersetzungs-Maschine bauen</h3>
+            <p class="mb-4 text-slate-600">Bevor wir die ganze Tabelle rechnen, müssen wir den Text in einen mathematischen Term übersetzen. Da im Text steht, dass man <strong>"das Ergebnis"</strong> malnehmen soll, wurden die <strong>Klammern bereits für dich gesetzt</strong>! Trage nun nur noch die passenden Zahlen aus dem Text ein.</p>
+            
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                <div class="flex items-center gap-2 flex-wrap text-lg font-bold justify-center">
+                    <span>$C = $</span>
+                    <span>$($</span>
+                    <span class="text-sky-600">$F$</span>
+                    <span>$-$</span>
+                    <input type="number" id="term_n1" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                    <span>$)$</span>
+                    <span>$\cdot$</span>
+                    <input type="number" id="term_n2" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                    <span>$:$</span>
+                    <input type="number" id="term_n3" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="checkTerm()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Term prüfen</button>
+                    <div id="fb_term" class="hidden mt-3 text-sm text-center"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aufgabe a) -->
+        <section id="section_a" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe a) Temperaturen schrittweise umrechnen</h3>
+            <p class="mb-4 text-slate-600">Rechne nun die Temperatur für jede Stadt aus. Trage dabei auch deine <strong>Zwischenschritte</strong> ein, damit du dich nicht verrechnest! <br><em>(Die Formel aus Schritt 1: $C = (F - 32) \cdot 5 : 9$)</em></p>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 border-y-2 border-slate-300">
+                            <th class="p-3 font-bold text-slate-700 w-1/6">Stadt</th>
+                            <th class="p-3 font-bold text-slate-700 w-1/6">Fahrenheit ($^\circ\text{F}$)</th>
+                            <th class="p-3 font-bold text-slate-600 w-1/6">1. Klammer<br><span class="text-xs font-normal">($F - 32$)</span></th>
+                            <th class="p-3 font-bold text-slate-600 w-1/6">2. Produkt<br><span class="text-xs font-normal">(Ergebnis $\cdot 5$)</span></th>
+                            <th class="p-3 font-bold text-sky-800 bg-sky-100 rounded-tr-lg w-1/6">Celsius ($^\circ\text{C}$)<br><span class="text-xs font-normal">(Ergebnis $: 9$)</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <!-- Anchorage -->
+                        <tr>
+                            <td class="p-3 font-semibold">Anchorage</td>
+                            <td class="p-3 font-bold">$-13$</td>
+                            <td class="p-2"><input type="number" id="a_anch_s1" class="tbl-input feedback-transition" placeholder="-13 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_anch_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_anch_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                        <!-- Edmonton -->
+                        <tr>
+                            <td class="p-3 font-semibold">Edmonton</td>
+                            <td class="p-3 font-bold">$-4$</td>
+                            <td class="p-2"><input type="number" id="a_edm_s1" class="tbl-input feedback-transition" placeholder="-4 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_edm_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_edm_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                        <!-- Los Angeles -->
+                        <tr>
+                            <td class="p-3 font-semibold">Los Angeles</td>
+                            <td class="p-3 font-bold">$59$</td>
+                            <td class="p-2"><input type="number" id="a_la_s1" class="tbl-input feedback-transition" placeholder="59 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_la_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_la_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                        <!-- Kansas City -->
+                        <tr>
+                            <td class="p-3 font-semibold">Kansas City</td>
+                            <td class="p-3 font-bold">$14$</td>
+                            <td class="p-2"><input type="number" id="a_kan_s1" class="tbl-input feedback-transition" placeholder="14 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_kan_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_kan_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                        <!-- Montreal -->
+                        <tr>
+                            <td class="p-3 font-semibold">Montreal</td>
+                            <td class="p-3 font-bold">$5$</td>
+                            <td class="p-2"><input type="number" id="a_mon_s1" class="tbl-input feedback-transition" placeholder="5 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_mon_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_mon_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                        <!-- New York -->
+                        <tr>
+                            <td class="p-3 font-semibold">New York</td>
+                            <td class="p-3 font-bold">$32$</td>
+                            <td class="p-2"><input type="number" id="a_ny_s1" class="tbl-input feedback-transition" placeholder="32 - 32"></td>
+                            <td class="p-2"><input type="number" id="a_ny_s2" class="tbl-input feedback-transition" placeholder="?"></td>
+                            <td class="p-2 bg-sky-50"><input type="number" id="a_ny_s3" class="tbl-input border-sky-400 font-bold feedback-transition" placeholder="?"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4">
+                <button onclick="checkTable()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Tabelle prüfen</button>
+                <div id="fb_table" class="hidden mt-3 text-sm text-left"></div>
+            </div>
+        </section>
+
+        <!-- Aufgabe b) -->
+        <section id="section_b" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-amber-400 text-amber-900 font-bold px-4 py-1 rounded-bl-lg text-sm shadow-sm">Umkehraufgabe!</div>
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe b) Grüße aus München</h3>
+            <p class="text-lg italic text-slate-600 mb-6 font-serif">"In München sind es $-5^\circ\text{C}$. Erkläre, wie du die Angabe in Fahrenheit umrechnen kannst und gib das Ergebnis an."</p>
+            
+            <div class="space-y-6">
+                <!-- Maschine umbauen -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                    <h4 class="font-bold mb-3 text-amber-900">1. Baue die Rückwärts-Maschine:</h4>
+                    <p class="text-sm mb-3 text-amber-800">Wenn wir von Celsius zu Fahrenheit wollen, müssen wir den Term $C = (F - 32) \cdot 5 : 9$ <strong>von hinten nach vorne</strong> mit den gegenteiligen Rechenzeichen abarbeiten.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-3 rounded border border-amber-300 shadow-sm">
+                            <span class="block text-xs text-slate-500 mb-1">Was passiert mit $: 9$?</span>
+                            <div class="flex items-center gap-2">Aus $: 9$ wird <input type="text" id="b_op1" class="w-16 p-1 border rounded text-center focus:ring-2 focus:ring-amber-400" placeholder="z.B. * 9"></div>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-amber-300 shadow-sm">
+                            <span class="block text-xs text-slate-500 mb-1">Was passiert mit $\cdot 5$?</span>
+                            <div class="flex items-center gap-2">Aus $\cdot 5$ wird <input type="text" id="b_op2" class="w-16 p-1 border rounded text-center focus:ring-2 focus:ring-amber-400" placeholder="?"></div>
+                        </div>
+                        <div class="bg-white p-3 rounded border border-amber-300 shadow-sm">
+                            <span class="block text-xs text-slate-500 mb-1">Was passiert mit $- 32$?</span>
+                            <div class="flex items-center gap-2">Aus $- 32$ wird <input type="text" id="b_op3" class="w-16 p-1 border rounded text-center focus:ring-2 focus:ring-amber-400" placeholder="?"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schrittweises Rechnen -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold mb-3">2. Rechne schrittweise für München ($-5^\circ\text{C}$):</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap text-lg">
+                            <span>Schritt 1:</span>
+                            <span class="font-bold text-sky-700">$-5$</span>
+                            <span>$\cdot 9 = $</span>
+                            <input type="number" id="b_s1" class="w-20 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                        </div>
+                        
+                        <div class="flex items-center gap-2 flex-wrap text-lg">
+                            <span>Schritt 2:</span>
+                            <span>Ergebnis</span>
+                            <span>$: 5 = $</span>
+                            <input type="number" id="b_s2" class="w-20 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                        </div>
+
+                        <div class="flex items-center gap-2 flex-wrap text-lg pt-2 border-t border-slate-300">
+                            <span class="font-bold">Endergebnis:</span>
+                            <span>Ergebnis</span>
+                            <span>$+ 32 = $</span>
+                            <input type="number" id="b_final" class="w-24 p-2 border-2 border-sky-400 rounded text-center font-bold focus:ring-2 focus:ring-sky-500 feedback-transition" placeholder="?">
+                            <span class="text-sky-700 font-bold">$^\circ\text{F}$</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="checkTaskB()" class="mt-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded transition shadow-md">Umrechnung prüfen</button>
+                    <div id="fb_b" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Socratic Reflection Task -->
+        <section id="section_refl" class="bg-indigo-50 border-2 border-indigo-200 p-6 rounded-xl shadow-md mt-8">
+            <h3 class="text-xl font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                <span>🕵️</span> Das Geheimnis der Umkehraufgabe
+            </h3>
+            <p class="mb-4">Du hast gerade den Fahrenheit-Term $C = (F - 32) \cdot 5 : 9$ komplett umgedreht, um Aufgabe b) zu lösen.</p>
+            <p class="font-bold mb-2">Erkläre in eigenen Worten: Wenn man einen langen mathematischen Term rückgängig machen will, was passiert mit der <strong>Reihenfolge</strong> der Rechenschritte und was passiert mit den <strong>Rechenzeichen</strong>?</p>
+            
+            <textarea id="reflection_text" rows="3" class="w-full p-3 border border-indigo-300 rounded-lg shadow-inner focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="Beim Rückwärtsrechnen muss man..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000 mt-8">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Perfekt gelöst! Hier ist die Übersicht</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div class="space-y-4">
+                    <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe a) Die Tabelle</h4>
+                    <p><strong>Die Formel lautet:</strong> $C = (F - 32) \cdot 5 : 9$</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>Anchorage:</strong> $(-13 - 32) \cdot 5 : 9 = -45 \cdot 5 : 9 = -225 : 9 = \mathbf{-25^\circ C}$</li>
+                        <li><strong>Edmonton:</strong> $(-4 - 32) \cdot 5 : 9 = -36 \cdot 5 : 9 = -180 : 9 = \mathbf{-20^\circ C}$</li>
+                        <li><strong>Los Angeles:</strong> $(59 - 32) \cdot 5 : 9 = 27 \cdot 5 : 9 = 135 : 9 = \mathbf{15^\circ C}$</li>
+                        <li><strong>Kansas City:</strong> $(14 - 32) \cdot 5 : 9 = -18 \cdot 5 : 9 = -90 : 9 = \mathbf{-10^\circ C}$</li>
+                        <li><strong>Montreal:</strong> $(5 - 32) \cdot 5 : 9 = -27 \cdot 5 : 9 = -135 : 9 = \mathbf{-15^\circ C}$</li>
+                        <li><strong>New York:</strong> $(32 - 32) \cdot 5 : 9 = 0 \cdot 5 : 9 = \mathbf{0^\circ C}$</li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe b) Umkehraufgabe</h4>
+                    <p class="text-emerald-800 bg-emerald-100 p-2 rounded mb-2">Erkläre, wie du die Angabe in Fahrenheit umrechnen kannst:</p>
+                    <p>Um von Celsius nach Fahrenheit zu rechnen, müssen wir die Rechenvorschrift von hinten nach vorne umdrehen. Aus Division wird Multiplikation, aus Multiplikation wird Division und aus Subtraktion wird Addition.</p>
+                    <p><strong>Die Umkehr-Formel lautet:</strong> $F = C \cdot 9 : 5 + 32$</p>
+                    <p><strong>Rechnung für München ($-5^\circ\text{C}$):</strong><br>
+                    $(-5) \cdot 9 : 5 + 32$<br>
+                    $= -45 : 5 + 32$<br>
+                    $= -9 + 32 = \mathbf{23^\circ F}$</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function parseNum(val) {
+            if (typeof val !== 'string') return NaN;
+            return parseFloat(val.trim().replace(',', '.'));
+        }
+
+        function isCorrect(id, target) {
+            const val = document.getElementById(id).value;
+            return parseNum(val) === target;
+        }
+
+        function setStyle(id, isValid) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isValid) el.classList.add('correct-bg');
+            else el.classList.add('wrong-bg');
+        }
+
+        function checkText(id, pattern) {
+            const val = document.getElementById(id).value.trim();
+            return pattern.test(val);
+        }
+
+        function showFb(id, msg, isSuccess) {
+            const el = document.getElementById(id);
+            el.innerHTML = isSuccess ? `✅ ${msg}` : `💡 <strong>Tipp:</strong> ${msg}`;
+            el.className = `mt-3 block p-3 rounded-lg text-sm shadow-sm ${isSuccess ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+            el.classList.remove('hidden');
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([el]).catch((err) => console.log(err.message));
+            }
+        }
+
+        let taskState = { term: false, table: false, b: false, refl: false };
+
+        function checkAllDone() {
+            if (taskState.term && taskState.table && taskState.b && taskState.refl) {
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+                const sol = document.getElementById('solution_section');
+                sol.classList.remove('hidden');
+                setTimeout(() => sol.classList.remove('opacity-0'), 50);
+                setTimeout(() => sol.scrollIntoView({ behavior: 'smooth' }), 300);
+            }
+        }
+
+        // --- Term aufstellen ---
+        function checkTerm() {
+            const n1 = isCorrect('term_n1', 32);
+            const n2 = isCorrect('term_n2', 5);
+            const n3 = isCorrect('term_n3', 9);
+
+            setStyle('term_n1', n1);
+            setStyle('term_n2', n2);
+            setStyle('term_n3', n3);
+
+            if (!n1 || !n2 || !n3) {
+                showFb('fb_term', "Prüfe die Zahlen noch einmal. Erst 32 subtrahieren, dann mit 5 multiplizieren, dann durch 9 dividieren.", false);
+            } else {
+                showFb('fb_term', "Perfekt! Dein Term $(F - 32) \\cdot 5 : 9$ ist startklar. Fülle nun die Tabelle aus.", true);
+                taskState.term = true;
+                checkAllDone();
+            }
+        }
+
+        // --- Aufgabe a) Tabelle ---
+        function checkTable() {
+            const cities = [
+                { id: 'anch', name: 'Anchorage', f: -13, s1: -45, s2: -225, s3: -25 },
+                { id: 'edm', name: 'Edmonton', f: -4, s1: -36, s2: -180, s3: -20 },
+                { id: 'la', name: 'Los Angeles', f: 59, s1: 27, s2: 135, s3: 15 },
+                { id: 'kan', name: 'Kansas City', f: 14, s1: -18, s2: -90, s3: -10 },
+                { id: 'mon', name: 'Montreal', f: 5, s1: -27, s2: -135, s3: -15 },
+                { id: 'ny', name: 'New York', f: 32, s1: 0, s2: 0, s3: 0 }
+            ];
+
+            let allCorrect = true;
+            let errorMsg = "";
+
+            for (let c of cities) {
+                let v1 = isCorrect(`a_${c.id}_s1`, c.s1);
+                let v2 = isCorrect(`a_${c.id}_s2`, c.s2);
+                let v3 = isCorrect(`a_${c.id}_s3`, c.s3);
+                
+                setStyle(`a_${c.id}_s1`, v1);
+                setStyle(`a_${c.id}_s2`, v2);
+                setStyle(`a_${c.id}_s3`, v3);
+
+                if (allCorrect && (!v1 || !v2 || !v3)) {
+                    allCorrect = false;
+                    if (!v1) {
+                        errorMsg = `Schau nochmal bei <strong>${c.name}</strong> in die 1. Spalte. Du musst rechnen: ${c.f} - 32 = ?`;
+                    } else if (!v2) {
+                        errorMsg = `Die Klammer bei <strong>${c.name}</strong> stimmt! Rechne nun für Spalte 2: ${c.s1} $\\cdot$ 5 = ?`;
+                    } else if (!v3) {
+                        errorMsg = `Fast fertig bei <strong>${c.name}</strong>! Teile nun das Produkt noch durch 9: ${c.s2} : 9 = ?`;
+                    }
+                }
+            }
+
+            if (!allCorrect) {
+                showFb('fb_table', errorMsg, false);
+            } else {
+                showFb('fb_table', "Großartig! Du hast die gesamte Tabelle schrittweise und fehlerfrei ausgerechnet.", true);
+                taskState.table = true;
+                checkAllDone();
+            }
+        }
+
+        // --- Aufgabe b) Umkehraufgabe ---
+        function checkTaskB() {
+            // Flexible regex for reverse operators (e.g. "*9", "* 9", "mal 9", "x9")
+            const op1Ok = checkText('b_op1', /(\*|\bx|mal)\s*9/i);
+            const op2Ok = checkText('b_op2', /(:|\/|geteilt)\s*5/i);
+            const op3Ok = checkText('b_op3', /(\+)\s*32/i);
+            
+            setStyle('b_op1', op1Ok);
+            setStyle('b_op2', op2Ok);
+            setStyle('b_op3', op3Ok);
+
+            let s1 = isCorrect('b_s1', -45);
+            let s2 = isCorrect('b_s2', -9);
+            let final = isCorrect('b_final', 23);
+            
+            setStyle('b_s1', s1);
+            setStyle('b_s2', s2);
+            setStyle('b_final', final);
+
+            if (!op1Ok || !op2Ok || !op3Ok) {
+                showFb('fb_b', "Schau dir Teil 1 (die Rechenzeichen) an: Das Gegenteil von Geteilt ist Mal (*). Das Gegenteil von Minus ist Plus (+). Trage die Rechenzeichen und die jeweilige Zahl ein (z.B. '* 9').", false);
+            } else if (!s1) {
+                showFb('fb_b', "Die Rückwärts-Maschine stimmt! Rechne nun Schritt 1 aus: Was ist $-5 \\cdot 9$?", false);
+            } else if (!s2) {
+                showFb('fb_b', "Schritt 1 stimmt. Teile nun das Ergebnis aus Schritt 1 ($-45$) durch $5$.", false);
+            } else if (!final) {
+                showFb('fb_b', "Fast geschafft. Addiere nun noch $32$ zu deinem Zwischenergebnis aus Schritt 2 ($-9 + 32$).", false);
+            } else {
+                showFb('fb_b', "Sehr stark! Du hast die Formel erfolgreich umgedreht und Münchens Temperatur berechnet.", true);
+                taskState.b = true;
+                checkAllDone();
+            }
+        }
+
+        // --- Socratic Reflection (Regex) ---
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const el = document.getElementById('reflection_text');
+            const fbBox = document.getElementById('reflection_feedback');
+            
+            if (text.length < 15) {
+                fbBox.innerHTML = "💡 Da fehlt noch etwas Text. Erkläre beide Aspekte: Reihenfolge und Rechenzeichen.";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-amber-100 text-amber-800 border border-amber-200";
+                fbBox.classList.remove('hidden');
+                return;
+            }
+
+            // Mentions reverse order (hinten, umgekehrt, rückwärts, andersrum)
+            const regexOrder = /(?=.*([hH]inten|[uU]mgekehrt|[rR]ückwärts|[aA]ndersrum|[vV]ertauscht))/i;
+            // Mentions opposite signs (gegenteil, umkehrung, plus, minus, mal, geteilt)
+            const regexSigns = /(?=.*([gG]egenteil|[uU]mkehr|[pP]lus|[mM]inus|[mM]al|[gG]eteilt))/i;
+
+            if (!regexOrder.test(text)) {
+                el.classList.remove('correct-bg');
+                el.classList.add('wrong-bg');
+                fbBox.innerHTML = "💡 <strong>Tipp:</strong> Was passiert mit der Reihenfolge? Fängt man beim Rückwärtsrechnen vorne bei der Klammer an, oder macht man das, was am Ende stand, als Erstes?";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-red-100 text-red-800 border border-red-200";
+                fbBox.classList.remove('hidden');
+            } else if (!regexSigns.test(text)) {
+                el.classList.remove('correct-bg');
+                el.classList.add('wrong-bg');
+                fbBox.innerHTML = "💡 <strong>Tipp:</strong> Du hast die Reihenfolge (von hinten) erwähnt. Aber was hast du mit den Rechenzeichen (z.B. dem Minus vor der 32) gemacht?";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-red-100 text-red-800 border border-red-200";
+                fbBox.classList.remove('hidden');
+            }
+            else {
+                // Success!
+                el.classList.remove('wrong-bg');
+                el.classList.add('correct-bg');
+                fbBox.innerHTML = "✅ <strong>Hervorragend zusammengefasst!</strong> Bei einer Umkehraufgabe rechnet man den Weg exakt von <strong>hinten nach vorne</strong> durch und verwendet für jedes Rechenzeichen sein <strong>Gegenteil</strong> (Plus/Minus, Mal/Geteilt).";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-green-100 text-green-800 border border-green-200";
+                fbBox.classList.remove('hidden');
+                
+                taskState.refl = true;
+                checkAllDone();
+            }
+        }
+    </script>
+</body>
+</html>

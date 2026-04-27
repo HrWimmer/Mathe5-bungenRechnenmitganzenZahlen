@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorrangregeln - Übung S. 152/4</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7; border-color: #22c55e; } 
+        .wrong-bg { background-color: #fee2e2; border-color: #ef4444; }   
+        
+        input[type="text"], input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header & Prior Knowledge -->
+    <header class="bg-violet-600 text-white py-8 shadow-md">
+        <div class="max-w-5xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">KlaPoPS in Aktion: Übung S. 152 / 4</h2>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card: Prior Knowledge -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🚀</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Die Königsdisziplin: Potenzen & Eckige Klammern</h3>
+                    <p class="mb-2">Hier brauchst du <strong>KlaPoPS</strong> (Klammer, Potenz, Punkt, Strich) wirklich komplett! Zwei wichtige Regeln für diese Übung:</p>
+                    <ul class="list-disc list-inside space-y-2 font-semibold text-violet-800 bg-violet-50 p-4 rounded-lg border border-violet-200 mt-2">
+                        <li><strong>Eckige Klammern $[...]$:</strong> Funktionieren genau wie runde Klammern. Man nutzt sie nur zur Übersicht. Es gilt immer: <em>Innere Klammer zuerst, dann die äußere!</em></li>
+                        <li><strong>Potenzen:</strong> $(-2)^3$ bedeutet $(-2) \cdot (-2) \cdot (-2)$. Minus mal Minus gibt Plus, mal Minus gibt wieder Minus! Also: $(-2)^3 = -8$.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 1: Task a & b -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Teil 1: Klammer-Labyrinthe</h3>
+            
+            <div class="space-y-8">
+                <!-- Task a -->
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-300 shadow-sm">
+                    <h4 class="font-bold text-lg mb-3">a) $11 \cdot [10 : (-2) - (-8)]$</h4>
+                    <p class="text-sm text-slate-600 mb-4">Wir arbeiten uns von innen nach außen vor. In der eckigen Klammer gilt natürlich auch wieder Punkt-vor-Strich!</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Punkt in der Klammer): $11 \cdot [$</span>
+                            <input type="text" id="a_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- (-8)]$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Eckige Klammer beenden): $11 \cdot $</span>
+                            <input type="text" id="a_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span class="text-sm italic text-slate-500 ml-2">(Tipp: Was ist Minus Minus 8?)</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-slate-200">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="a_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskA()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_a" class="text-sm hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task b -->
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-300 shadow-sm">
+                    <h4 class="font-bold text-lg mb-3">b) $(-98 - 17 - 7) : (113 - 13 \cdot 4)$</h4>
+                    <p class="text-sm text-slate-600 mb-4">Hier gibt es zwei große Klammern. Wir rechnen beide getrennt voneinander aus.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Linke Klammer, von links n. rechts):</span>
+                            <input type="text" id="b_s1" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$: (113 - 13 \cdot 4)$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Rechte Klammer, Punkt): $ \dots : (113 - $</span>
+                            <input type="text" id="b_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$)$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 3 (Rechte Klammer komplett): $ \dots : $</span>
+                            <input type="text" id="b_s3" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-slate-200">
+                            <span class="font-bold">Endergebnis (Division):</span>
+                            <input type="text" id="b_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskB()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_b" class="text-sm hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Task c & d -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Teil 2: Potenzen-Party</h3>
+            
+            <div class="space-y-8">
+                <!-- Task c -->
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-300 shadow-sm">
+                    <h4 class="font-bold text-lg mb-3">c) $(-8) \cdot (-2)^3 - (-2)^3 + 8$</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Potenzen zuerst!): $(-8) \cdot $</span>
+                            <input type="text" id="c_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$-$</span>
+                            <input type="text" id="c_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+ 8$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Punktrechnung): </span>
+                            <input type="text" id="c_s3" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- (\dots) + 8$</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-slate-200">
+                            <span class="font-bold">Endergebnis (Von links nach rechts):</span>
+                            <input type="text" id="c_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskC()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_c" class="text-sm hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task d -->
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-300 shadow-sm">
+                    <h4 class="font-bold text-lg mb-3">d) $(-9 + 8)^5 \cdot (-8 + 7)^4 \cdot (-7 + 5)^3$</h4>
+                    <p class="text-sm text-slate-600 mb-4">Viele Potenzen! Aber KlaPoPS sagt: Klammern noch vor Potenzen! Rechne erst das Innere der Klammern aus.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Klammern): $($</span>
+                            <input type="text" id="d_s1" class="w-12 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$)^5 \cdot ($</span>
+                            <input type="text" id="d_s2" class="w-12 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$)^4 \cdot ($</span>
+                            <input type="text" id="d_s3" class="w-12 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$)^3$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap mt-2">
+                            <span>Schritt 2 (Potenzen): </span>
+                            <input type="text" id="d_s4" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$\cdot$</span>
+                            <input type="text" id="d_s5" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$\cdot$</span>
+                            <input type="text" id="d_s6" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-slate-200 mt-2">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="d_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskD()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_d" class="text-sm hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 3: Task e & f -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Teil 3: Die Boss-Gegner</h3>
+            
+            <div class="space-y-8">
+                <!-- Task e -->
+                <div class="p-5 bg-amber-50 rounded-xl border-2 border-amber-300 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-amber-300 text-amber-900 font-bold px-3 py-1 rounded-bl-lg text-sm">Achtung: Trick!</div>
+                    <h4 class="font-bold text-lg mb-3">e) $(-4)^3 + 3^4 - \color{orange}{(4^3 - 8^2)} \cdot (-3)^4$</h4>
+                    <p class="text-sm text-slate-700 mb-4">Sieht riesig aus. Wir schauen uns zuerst <strong>nur</strong> die orangene Klammer an!</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Potenzen in der Klammer): $(4^3 =$</span>
+                            <input type="text" id="e_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$-$</span>
+                            <input type="text" id="e_s2" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="8²=?">
+                            <span>$)$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Ergebnis der orangenen Klammer): </span>
+                            <input type="text" id="e_s3" class="w-16 p-2 border rounded text-center font-bold bg-white feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 3 (Rechne die vorderen Potenzen aus): </span>
+                            <input type="text" id="e_s4" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="(-4)³">
+                            <span>$+$</span>
+                            <input type="text" id="e_s5" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="3⁴">
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-amber-300">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="e_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskE()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_e" class="text-sm hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Task f -->
+                <div class="p-5 bg-slate-50 rounded-xl border border-slate-300 shadow-sm">
+                    <h4 class="font-bold text-lg mb-3">f) $[-223 + 23 \cdot (-4) - (-72)] : (-3) + 13$</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 1 (Punkt in eckiger Klammer): $[-223 + $</span>
+                            <input type="text" id="f_s1" class="w-16 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$- (-72)]$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 2 (Eckige Klammer komplett v. links): </span>
+                            <input type="text" id="f_s2" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="[ ? ]">
+                            <span>$: (-3) + 13$</span>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Schritt 3 (Division): </span>
+                            <input type="text" id="f_s3" class="w-20 p-2 border rounded text-center feedback-transition" placeholder="?">
+                            <span>$+ 13$</span>
+                        </div>
+                        <div class="flex items-center gap-3 pt-2 border-t border-slate-200">
+                            <span class="font-bold">Endergebnis:</span>
+                            <input type="text" id="f_final" class="w-24 p-2 border rounded shadow-sm text-center font-bold feedback-transition" placeholder="?">
+                            <button onclick="checkTaskF()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                        </div>
+                        <div id="fb_f" class="text-sm hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Socratic Reflection Task -->
+        <section class="bg-violet-50 border-2 border-violet-200 p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-violet-800 mb-3 flex items-center gap-2">
+                <span>🕵️</span> Der Mathematiker-Trick
+            </h3>
+            <p class="mb-4">Schau dir Aufgabe <strong>e)</strong> nochmal genau an. Da stand am Ende ein riesiges $\cdot (-3)^4$. Das hast du aber in deinen Einzelschritten gar nicht mehr ausrechnen müssen!</p>
+            <p class="font-bold mb-2">Erkläre in deinen eigenen Worten: Warum war es bei Aufgabe e) völlig egal, was $(-3)^4$ ergibt? Warum konnten wir diesen Teil einfach ignorieren?</p>
+            
+            <textarea id="reflection_text" rows="4" class="w-full p-3 border border-violet-300 rounded-lg shadow-inner focus:ring-2 focus:ring-violet-500 feedback-transition" placeholder="Wir konnten das ignorieren, weil die orangene Klammer davor..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Meisterhaft! Hier ist die Musterlösung</h3>
+            <p class="mb-6 text-emerald-700">Du hast dich durch alle Labyrinthe und Potenzen gekämpft. Vergleiche deine Rechenwege:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe a)</h4>
+                        <p>$11 \cdot [10 : (-2) - (-8)]$ <br>
+                        $= 11 \cdot [-5 + 8]$ <br>
+                        $= 11 \cdot 3 = \mathbf{33}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe b)</h4>
+                        <p>$(-98 - 17 - 7) : (113 - 13 \cdot 4)$ <br>
+                        $= (-115 - 7) : (113 - 52)$ <br>
+                        $= (-122) : 61 = \mathbf{-2}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe c)</h4>
+                        <p>$(-8) \cdot (-2)^3 - (-2)^3 + 8$ <br>
+                        $= (-8) \cdot (-8) - (-8) + 8$ <br>
+                        $= 64 + 8 + 8 = \mathbf{80}$</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe d)</h4>
+                        <p>$(-9 + 8)^5 \cdot (-8 + 7)^4 \cdot (-7 + 5)^3$ <br>
+                        $= (-1)^5 \cdot (-1)^4 \cdot (-2)^3$ <br>
+                        $= (-1) \cdot 1 \cdot (-8) = \mathbf{8}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe e)</h4>
+                        <p>$(-4)^3 + 3^4 - (4^3 - 8^2) \cdot (-3)^4$ <br>
+                        $= -64 + 81 - (64 - 64) \cdot 81$ <br>
+                        $= 17 - 0 \cdot 81 = \mathbf{17}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Aufgabe f)</h4>
+                        <p>$[-223 + 23 \cdot (-4) - (-72)] : (-3) + 13$ <br>
+                        $= [-223 - 92 + 72] : (-3) + 13$ <br>
+                        $= [-315 + 72] : (-3) + 13$ <br>
+                        $= -243 : (-3) + 13$ <br>
+                        $= 81 + 13 = \mathbf{94}$</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function parseGermanNum(val) {
+            if (typeof val !== 'string') return NaN;
+            val = val.trim().replace(',', '.');
+            return parseFloat(val);
+        }
+
+        function isCorrectNum(inputValue, targetValue) {
+            const parsed = parseGermanNum(inputValue);
+            if (isNaN(parsed)) return false;
+            return parsed === targetValue;
+        }
+
+        function setStyle(elementId, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isCorrect) el.classList.add('correct-bg');
+            else el.classList.add('wrong-bg');
+        }
+
+        function showMessage(elementId, msg, isCorrect) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = isCorrect ? `✅ ${msg}` : `💡 ${msg}`;
+            el.className = `text-sm mt-3 block p-3 rounded-lg ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            el.classList.remove('hidden');
+        }
+
+        // --- Task Logic ---
+        function checkTaskA() {
+            const s1 = document.getElementById('a_s1').value;
+            const s2 = document.getElementById('a_s2').value;
+            const final = document.getElementById('a_final').value;
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, -5)) { setStyle('a_s1', true); } else { setStyle('a_s1', false); allCorrect = false; fb += "Schritt 1: 10 : (-2) ist negativ.<br>"; }
+            if (isCorrectNum(s2, 3)) { setStyle('a_s2', true); } else { setStyle('a_s2', false); allCorrect = false; fb += "Schritt 2: -5 - (-8) wird zu -5 + 8.<br>"; }
+            if (isCorrectNum(final, 33)) { setStyle('a_final', true); } else { setStyle('a_final', false); allCorrect = false; fb += "Endergebnis: 11 mal deine eckige Klammer.<br>"; }
+
+            if (allCorrect) showMessage('fb_a', "Perfekt! Du hast die eckige Klammer bezwungen.", true);
+            else showMessage('fb_a', fb, false);
+        }
+
+        function checkTaskB() {
+            const s1 = document.getElementById('b_s1').value;
+            const s2 = document.getElementById('b_s2').value;
+            const s3 = document.getElementById('b_s3').value;
+            const final = document.getElementById('b_final').value;
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, -122)) { setStyle('b_s1', true); } else { setStyle('b_s1', false); allCorrect = false; fb += "Schritt 1: Du hast 98€ Schulden, dann nochmal 17€, dann 7€ (-98 - 17 - 7).<br>"; }
+            if (isCorrectNum(s2, 52)) { setStyle('b_s2', true); } else { setStyle('b_s2', false); allCorrect = false; fb += "Schritt 2: 13 * 4.<br>"; }
+            if (isCorrectNum(s3, 61)) { setStyle('b_s3', true); } else { setStyle('b_s3', false); allCorrect = false; fb += "Schritt 3: 113 - 52.<br>"; }
+            if (isCorrectNum(final, -2)) { setStyle('b_final', true); } else { setStyle('b_final', false); allCorrect = false; fb += "Endergebnis: -122 : 61.<br>"; }
+
+            if (allCorrect) showMessage('fb_b', "Super! Beide Klammern richtig isoliert berechnet.", true);
+            else showMessage('fb_b', fb, false);
+        }
+
+        function checkTaskC() {
+            const s1 = document.getElementById('c_s1').value;
+            const s2 = document.getElementById('c_s2').value;
+            const s3 = document.getElementById('c_s3').value;
+            const final = document.getElementById('c_final').value;
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, -8)) { setStyle('c_s1', true); } else { setStyle('c_s1', false); allCorrect = false; fb += "Potenz 1: (-2) * (-2) * (-2) = ?<br>"; }
+            if (isCorrectNum(s2, -8)) { setStyle('c_s2', true); } else { setStyle('c_s2', false); allCorrect = false; fb += "Potenz 2: Ist genau dasselbe (-8).<br>"; }
+            if (isCorrectNum(s3, 64)) { setStyle('c_s3', true); } else { setStyle('c_s3', false); allCorrect = false; fb += "Punktrechnung: (-8) * (-8) ergibt Plus!<br>"; }
+            if (isCorrectNum(final, 80)) { setStyle('c_final', true); } else { setStyle('c_final', false); allCorrect = false; fb += "Endergebnis: 64 - (-8) + 8. (Minus Minus wird Plus!).<br>"; }
+
+            if (allCorrect) showMessage('fb_c', "Klasse mit den Vorzeichen der Potenzen umgegangen!", true);
+            else showMessage('fb_c', fb, false);
+        }
+
+        function checkTaskD() {
+            const s1 = document.getElementById('d_s1').value; const s2 = document.getElementById('d_s2').value; const s3 = document.getElementById('d_s3').value;
+            const s4 = document.getElementById('d_s4').value; const s5 = document.getElementById('d_s5').value; const s6 = document.getElementById('d_s6').value;
+            const final = document.getElementById('d_final').value;
+            let allCorrect = true; let fb = "";
+
+            if(isCorrectNum(s1, -1) && isCorrectNum(s2, -1) && isCorrectNum(s3, -2)) { setStyle('d_s1', true); setStyle('d_s2', true); setStyle('d_s3', true); } 
+            else { setStyle('d_s1', false); setStyle('d_s2', false); setStyle('d_s3', false); allCorrect = false; fb += "Schritt 1: Berechne alle drei Klammern (-9+8), (-8+7), (-7+5).<br>"; }
+
+            if(isCorrectNum(s4, -1)) { setStyle('d_s4', true); } else { setStyle('d_s4', false); allCorrect = false; fb += "Potenz 1: (-1)^5. Fünf mal Minus ergibt wieder Minus!<br>"; }
+            if(isCorrectNum(s5, 1)) { setStyle('d_s5', true); } else { setStyle('d_s5', false); allCorrect = false; fb += "Potenz 2: (-1)^4. Vier mal Minus (gerade Anzahl) ergibt Plus!<br>"; }
+            if(isCorrectNum(s6, -8)) { setStyle('d_s6', true); } else { setStyle('d_s6', false); allCorrect = false; fb += "Potenz 3: (-2)^3.<br>"; }
+            
+            if(isCorrectNum(final, 8)) { setStyle('d_final', true); } else { setStyle('d_final', false); allCorrect = false; fb += "Endergebnis: (-1) * 1 * (-8).<br>"; }
+
+            if (allCorrect) showMessage('fb_d', "Genial! Die geraden und ungeraden Hochzahlen richtig erkannt.", true);
+            else showMessage('fb_d', fb, false);
+        }
+
+        function checkTaskE() {
+            const s1 = document.getElementById('e_s1').value; const s2 = document.getElementById('e_s2').value; const s3 = document.getElementById('e_s3').value;
+            const s4 = document.getElementById('e_s4').value; const s5 = document.getElementById('e_s5').value; const final = document.getElementById('e_final').value;
+            let allCorrect = true; let fb = "";
+
+            if(isCorrectNum(s1, 64) && isCorrectNum(s2, 64)) { setStyle('e_s1', true); setStyle('e_s2', true); } else { setStyle('e_s1', false); setStyle('e_s2', false); allCorrect = false; fb += "Schritt 1: 4*4*4 und 8*8.<br>"; }
+            if(isCorrectNum(s3, 0)) { setStyle('e_s3', true); } else { setStyle('e_s3', false); allCorrect = false; fb += "Schritt 2: Was ist 64 - 64?<br>"; }
+            if(isCorrectNum(s4, -64)) { setStyle('e_s4', true); } else { setStyle('e_s4', false); allCorrect = false; fb += "Schritt 3 links: (-4)^3 ist negativ.<br>"; }
+            if(isCorrectNum(s5, 81)) { setStyle('e_s5', true); } else { setStyle('e_s5', false); allCorrect = false; fb += "Schritt 3 rechts: 3^4 = 3*3*3*3.<br>"; }
+            if(isCorrectNum(final, 17)) { setStyle('e_final', true); } else { setStyle('e_final', false); allCorrect = false; fb += "Endergebnis: Denk dran, -64 + 81. Der Rest dahinter ist 0 * (-3)^4... was fällt dir auf?<br>"; }
+
+            if (allCorrect) showMessage('fb_e', "Richtig! Der schwere hintere Teil hat sich einfach in Luft aufgelöst!", true);
+            else showMessage('fb_e', fb, false);
+        }
+
+        function checkTaskF() {
+            const s1 = document.getElementById('f_s1').value; const s2 = document.getElementById('f_s2').value; 
+            const s3 = document.getElementById('f_s3').value; const final = document.getElementById('f_final').value;
+            let allCorrect = true; let fb = "";
+
+            if (isCorrectNum(s1, -92)) { setStyle('f_s1', true); } else { setStyle('f_s1', false); allCorrect = false; fb += "Schritt 1: 23 * (-4).<br>"; }
+            if (isCorrectNum(s2, -243)) { setStyle('f_s2', true); } else { setStyle('f_s2', false); allCorrect = false; fb += "Schritt 2: -223 - 92 + 72 (Minus Minus 72 wird Plus!).<br>"; }
+            if (isCorrectNum(s3, 81)) { setStyle('f_s3', true); } else { setStyle('f_s3', false); allCorrect = false; fb += "Schritt 3: -243 : (-3). Minus geteilt durch Minus wird Plus.<br>"; }
+            if (isCorrectNum(final, 94)) { setStyle('f_final', true); } else { setStyle('f_final', false); allCorrect = false; fb += "Endergebnis: 81 + 13.<br>"; }
+
+            if (allCorrect) showMessage('fb_f', "Stark! Du bist ein echter Rechen-Profi.", true);
+            else showMessage('fb_f', fb, false);
+        }
+
+        // --- Socratic Reflection (Regex Based) ---
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const feedbackBox = document.getElementById('reflection_feedback');
+            const textAreaEl = document.getElementById('reflection_text');
+            
+            if (text.length < 15) {
+                feedbackBox.innerHTML = "💡 Da fehlt noch etwas Text. Erinnere dich an den Wert der orangenen Klammer!";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-amber-100 text-amber-800 block";
+                return;
+            }
+
+            // Mentions the bracket equals 0 (Null, 0)
+            const regexZero = /(?=.*([nN]ull|0))/;
+            // Mentions that multiplying by 0 makes it vanish (Mal, multipliziert, fällt weg, egal, faktor, produkt)
+            const regexMultiply = /(?=.*([mM]al|[mM]ultipli|\*|[wW]eg|[eE]gal|[nN]ichts|[fF]aktor|[pP]rodukt))/;
+
+            const hasZero = regexZero.test(text);
+            const hasMultiply = regexMultiply.test(text);
+
+            if (!hasZero) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Tipp:</strong> Schau dir Schritt 1 und 2 in Aufgabe e) an. Welches spezielle Ergebnis kam in der orangenen Klammer heraus?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-red-100 text-red-800 block";
+            } 
+            else if (!hasMultiply) {
+                textAreaEl.classList.remove('correct-bg');
+                textAreaEl.classList.add('wrong-bg');
+                feedbackBox.innerHTML = "💡 <strong>Tipp:</strong> Richtig, die Klammer war 0! Aber was passiert, wenn man eine riesige Zahl (wie die $(-3)^4$) <strong>mit 0 multipliziert</strong> (oder wenn ein Faktor 0 ist)?";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-orange-100 text-orange-800 block";
+            } 
+            else {
+                // Success!
+                textAreaEl.classList.remove('wrong-bg');
+                textAreaEl.classList.add('correct-bg');
+                feedbackBox.innerHTML = "✅ <strong>Exakt!</strong> Die innere Klammer ergab 0. Da danach ein Mal-Zeichen kam, wurde die ganze hintere Rechnung zu '0 mal irgendwas'. Und das ist immer 0! Solche Tricks nutzen Mathematiker gerne, um sich Arbeit zu sparen.";
+                feedbackBox.className = "text-sm p-3 rounded-lg bg-green-100 text-green-800 block";
+                
+                triggerConfetti();
+                unlockSolution();
+            }
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#7c3aed', '#10b981', '#f59e0b']
+            });
+        }
+
+        function unlockSolution() {
+            const solSection = document.getElementById('solution_section');
+            solSection.classList.remove('hidden');
+            setTimeout(() => {
+                solSection.classList.remove('opacity-0');
+            }, 50);
+            
+            setTimeout(() => {
+                solSection.scrollIntoView({ behavior: 'smooth' });
+                if(window.MathJax) {
+                    MathJax.typesetPromise([solSection]).catch((err) => console.log(err.message));
+                }
+            }, 300);
+        }
+
+    </script>
+</body>
+</html>

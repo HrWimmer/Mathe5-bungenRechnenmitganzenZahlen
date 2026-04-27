@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gliederungsbäume - Übung S. 153/11</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.4s ease-in-out;
+        }
+        /* Color states for tree nodes */
+        .correct-node { background-color: #dcfce7 !important; border-color: #22c55e !important; } 
+        .correct-node input { color: #166534 !important; }
+        .wrong-node { background-color: #fee2e2 !important; border-color: #ef4444 !important; }   
+        .wrong-node input { color: #991b1b !important; }
+
+        input[type="text"], input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Specialized Tree node styles for Vocabulary Trees */
+        .term-node {
+            position: absolute;
+            width: 100px; /* 6.25rem */
+            background-color: #ffedd5; /* orange-100 */
+            border: 2px solid #f97316; /* orange-500 */
+            border-radius: 0.25rem;
+            text-align: center;
+            font-size: 0.875rem; /* 14px */
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .term-node-given {
+            background-color: #f8fafc; /* slate-50 */
+            border-color: #64748b; /* slate-500 */
+        }
+
+        .node-top {
+            padding: 4px;
+            border-bottom: 2px dashed #f97316;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .term-node-given .node-top {
+            border-bottom-color: #64748b;
+        }
+
+        .node-bot {
+            padding: 4px;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #334155;
+        }
+
+        .vocab-input {
+            width: 100%;
+            background: transparent;
+            text-align: center;
+            outline: none;
+            font-weight: 600;
+            color: #c2410c; /* orange-700 */
+        }
+        
+        .vocab-input::placeholder {
+            color: #fdba74; /* orange-300 */
+            font-weight: normal;
+        }
+
+        .vocab-input:focus {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+        }
+
+        /* Simple 1-line node */
+        .term-node-simple {
+            position: absolute;
+            width: 100px;
+            height: 32px;
+            background-color: #ffedd5;
+            border: 2px solid #f97316;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-weight: bold;
+        }
+        .term-node-simple-given {
+            background-color: #f8fafc;
+            border-color: #64748b;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-teal-700 text-white py-8 shadow-md">
+        <div class="max-w-5xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Fachsprache & Gliederungsbäume: Übung S. 153 / 11</h2>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">📚</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Gliederungsbäume sprechen Fachchinesisch!</h3>
+                    <p class="mb-2">Diese Bäume haben geteilte Kästchen. Sie verraten uns den genauen Bauplan eines Terms in der Sprache der Mathematiker:</p>
+                    <ul class="list-disc list-inside space-y-2 font-semibold text-teal-800 bg-teal-50 p-4 rounded-lg border border-teal-200 mt-2">
+                        <li><strong>Obere Hälfte:</strong> Welche Rolle spielt dieses Kästchen für die Rechnung darüber? (z.B. "1. Summand", "Minuend")</li>
+                        <li><strong>Untere Hälfte:</strong> Was passiert in diesem Kästchen selbst? (z.B. "Produkt", oder einfach eine Zahl wie "-7")</li>
+                        <li><strong>Tipp:</strong> Wenn das Hauptergebnis oben eine "Summe" ist, dann heißen die Äste darunter zwingend Summand!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 1: Task a -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe a)</h3>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Visual Tree -->
+                <div class="flex-shrink-0">
+                    <p class="font-bold mb-4">1. Fülle die Fachbegriffe aus:</p>
+                    <div class="relative w-[400px] h-[280px] mx-auto bg-slate-50 rounded-xl border-2 border-slate-200 shadow-inner overflow-hidden">
+                        <!-- SVG Lines -->
+                        <svg class="absolute inset-0 z-0" width="400" height="280">
+                            <!-- Root to L1, R1 -->
+                            <line x1="200" y1="52" x2="120" y2="100" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="200" y1="52" x2="280" y2="100" stroke="#94a3b8" stroke-width="3" />
+                            <!-- L1 to L2_1, L2_2 -->
+                            <line x1="120" y1="156" x2="60" y2="200" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="120" y1="156" x2="180" y2="200" stroke="#94a3b8" stroke-width="3" />
+                        </svg>
+
+                        <!-- Nodes -->
+                        <!-- Level 0 -->
+                        <div class="term-node-simple term-node-simple-given" style="left: 150px; top: 20px;">
+                            Summe
+                        </div>
+                        
+                        <!-- Level 1 Left -->
+                        <div id="node_a_l1" class="term-node feedback-transition" style="left: 70px; top: 100px;">
+                            <div class="node-top"><input type="text" id="a_summand1" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot">Produkt</div>
+                        </div>
+                        
+                        <!-- Level 1 Right -->
+                        <div id="node_a_r1" class="term-node feedback-transition" style="left: 230px; top: 100px;">
+                            <div class="node-top"><input type="text" id="a_summand2" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot term-node-given" style="background: transparent;">17</div>
+                        </div>
+
+                        <!-- Level 2 Left-Left -->
+                        <div id="node_a_l2_1" class="term-node feedback-transition" style="left: 10px; top: 200px;">
+                            <div class="node-top"><input type="text" id="a_faktor1" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot term-node-given" style="background: transparent;">6</div>
+                        </div>
+
+                        <!-- Level 2 Left-Right -->
+                        <div id="node_a_l2_2" class="term-node feedback-transition" style="left: 130px; top: 200px;">
+                            <div class="node-top"><input type="text" id="a_faktor2" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot term-node-given" style="background: transparent;">-7</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="checkTreeA()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Fachbegriffe prüfen</button>
+                        <div id="fb_tree_a" class="hidden mt-2 text-sm text-left"></div>
+                    </div>
+                </div>
+
+                <!-- Guided Term & Bonus -->
+                <div id="section_term_a" class="flex-grow space-y-6 hidden opacity-0 feedback-transition">
+                    <div class="bg-teal-50 p-5 rounded-xl border border-teal-200">
+                        <h4 class="font-bold text-lg text-teal-900 mb-3">2. Term aufstellen</h4>
+                        <p class="text-sm mb-4">Setze nun die Zahlen aus der untersten Ebene deines Baumes ein, um den passenden Term zu bilden. Der Term ist eine Summe, die ein Produkt enthält.</p>
+                        
+                        <div class="flex items-center gap-2 text-lg font-bold flex-wrap justify-center">
+                            <span>$[$</span>
+                            <input type="number" id="a_term_1" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$\cdot$</span>
+                            <span>$($</span>
+                            <input type="number" id="a_term_2" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$)$</span>
+                            <span>$]$</span>
+                            <span>$+$</span>
+                            <input type="number" id="a_term_3" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button onclick="checkTermA()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition">Term prüfen</button>
+                            <div id="fb_term_a" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bonus A -->
+                    <div id="section_bonus_a" class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 hidden opacity-0 feedback-transition mt-6">
+                        <h4 class="font-bold text-lg text-indigo-900 mb-2">🎁 Bonus: Rechne den Term aus!</h4>
+                        <div class="flex items-center gap-3 text-lg font-bold flex-wrap justify-center mt-3">
+                            <span>$[6 \cdot (-7)] + 17 = $</span>
+                            <input type="number" id="a_bonus" class="w-24 p-2 border-2 border-indigo-400 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <button onclick="checkBonusA()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Ergebnis prüfen</button>
+                            <div id="fb_bonus_a" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Task b -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-8">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe b)</h3>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Visual Tree -->
+                <div class="flex-shrink-0">
+                    <p class="font-bold mb-4">1. Fülle die Fachbegriffe aus:</p>
+                    <div class="relative w-[480px] h-[280px] mx-auto bg-slate-50 rounded-xl border-2 border-slate-200 shadow-inner overflow-hidden">
+                        <!-- SVG Lines -->
+                        <svg class="absolute inset-0 z-0" width="480" height="280">
+                            <!-- Root to L1, R1 -->
+                            <line x1="240" y1="52" x2="120" y2="100" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="240" y1="52" x2="360" y2="100" stroke="#94a3b8" stroke-width="3" />
+                            <!-- L1 to L2_1, L2_2 -->
+                            <line x1="120" y1="156" x2="60" y2="200" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="120" y1="156" x2="180" y2="200" stroke="#94a3b8" stroke-width="3" />
+                            <!-- R1 to R2_1, R2_2 -->
+                            <line x1="360" y1="156" x2="300" y2="200" stroke="#94a3b8" stroke-width="3" />
+                            <line x1="360" y1="156" x2="420" y2="200" stroke="#94a3b8" stroke-width="3" />
+                        </svg>
+
+                        <!-- Nodes -->
+                        <!-- Level 0 -->
+                        <div id="node_b_root" class="term-node-simple feedback-transition" style="left: 190px; top: 20px;">
+                            <input type="text" id="b_root" class="vocab-input h-full w-full" placeholder="?">
+                        </div>
+                        
+                        <!-- Level 1 Left -->
+                        <div id="node_b_l1" class="term-node feedback-transition" style="left: 70px; top: 100px;">
+                            <div class="node-top"><input type="text" id="b_minuend" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot"><input type="text" id="b_quotient" class="vocab-input" placeholder="?"></div>
+                        </div>
+                        
+                        <!-- Level 1 Right -->
+                        <div id="node_b_r1" class="term-node feedback-transition" style="left: 310px; top: 100px;">
+                            <div class="node-top term-node-given" style="background: transparent;">Subtrahend</div>
+                            <div class="node-bot"><input type="text" id="b_produkt" class="vocab-input" placeholder="?"></div>
+                        </div>
+
+                        <!-- Level 2 L-L -->
+                        <div id="node_b_l2_1" class="term-node term-node-given feedback-transition" style="left: 10px; top: 200px;">
+                            <div class="node-top">Dividend</div>
+                            <div class="node-bot">-24</div>
+                        </div>
+
+                        <!-- Level 2 L-R -->
+                        <div id="node_b_l2_2" class="term-node feedback-transition" style="left: 130px; top: 200px;">
+                            <div class="node-top"><input type="text" id="b_divisor" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot term-node-given" style="background: transparent;">-8</div>
+                        </div>
+
+                        <!-- Level 2 R-L -->
+                        <div id="node_b_r2_1" class="term-node feedback-transition" style="left: 250px; top: 200px;">
+                            <div class="node-top"><input type="text" id="b_faktor1" class="vocab-input" placeholder="?"></div>
+                            <div class="node-bot term-node-given" style="background: transparent;">9</div>
+                        </div>
+
+                        <!-- Level 2 R-R -->
+                        <div id="node_b_r2_2" class="term-node term-node-given feedback-transition" style="left: 370px; top: 200px;">
+                            <div class="node-top">2. Faktor</div>
+                            <div class="node-bot">-4</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="checkTreeB()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded transition shadow-md">Fachbegriffe prüfen</button>
+                        <div id="fb_tree_b" class="hidden mt-2 text-sm text-left"></div>
+                    </div>
+                </div>
+
+                <!-- Guided Term & Bonus -->
+                <div id="section_term_b" class="flex-grow space-y-6 hidden opacity-0 feedback-transition">
+                    <div class="bg-teal-50 p-5 rounded-xl border border-teal-200">
+                        <h4 class="font-bold text-lg text-teal-900 mb-3">2. Term aufstellen</h4>
+                        <p class="text-sm mb-4">Setze die vier Zahlen aus der untersten Ebene in die korrekte Struktur ein. Wir haben eine große Differenz, bestehend aus einem Quotienten und einem Produkt!</p>
+                        
+                        <div class="flex items-center gap-2 text-lg font-bold flex-wrap justify-center">
+                            <span>$($</span>
+                            <input type="number" id="b_term_1" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$:$</span>
+                            <span>$($</span>
+                            <input type="number" id="b_term_2" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$))$</span>
+                            <span>$-$</span>
+                            <span>$($</span>
+                            <input type="number" id="b_term_3" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$\cdot$</span>
+                            <span>$($</span>
+                            <input type="number" id="b_term_4" class="w-16 p-2 border-2 border-teal-400 rounded text-center focus:ring-2 focus:ring-teal-500 feedback-transition" placeholder="?">
+                            <span>$))$</span>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <button onclick="checkTermB()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded transition">Term prüfen</button>
+                            <div id="fb_term_b" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bonus B -->
+                    <div id="section_bonus_b" class="bg-indigo-50 p-5 rounded-xl border border-indigo-200 hidden opacity-0 feedback-transition mt-6">
+                        <h4 class="font-bold text-lg text-indigo-900 mb-2">🎁 Bonus: Rechne den Term aus!</h4>
+                        <div class="flex items-center gap-3 text-lg font-bold flex-wrap justify-center mt-3">
+                            <span>$(-24 : (-8)) - (9 \cdot (-4)) = $</span>
+                            <input type="number" id="b_bonus" class="w-24 p-2 border-2 border-indigo-400 rounded text-center focus:ring-2 focus:ring-indigo-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="mt-4 text-center">
+                            <button onclick="checkBonusB()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">Ergebnis prüfen</button>
+                            <div id="fb_bonus_b" class="hidden mt-2 text-sm text-left"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Exzellente Arbeit! Musterlösung</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div>
+                    <h4 class="font-bold text-emerald-900 mb-2 text-lg">Aufgabe a)</h4>
+                    <p class="mb-2"><strong>Der fertige Term lautet:</strong><br>
+                    $[6 \cdot (-7)] + 17$</p>
+                    <p class="mb-2 text-emerald-700 font-bold">Ergebnis: $-42 + 17 = -25$</p>
+                    <p class="text-emerald-700 text-sm">Die Summe war die Hauptrechnung. Da das Produkt (die Multiplikation) wegen Punkt-vor-Strich ohnehin zuerst gerechnet wird, könnte man die eckigen Klammern hier sogar weglassen: $6 \cdot (-7) + 17$.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-emerald-900 mb-2 text-lg">Aufgabe b)</h4>
+                    <p class="mb-2"><strong>Der fertige Term lautet:</strong><br>
+                    $(-24 : (-8)) - (9 \cdot (-4))$</p>
+                    <p class="mb-2 text-emerald-700 font-bold">Ergebnis: $3 - (-36) = 39$</p>
+                    <p class="text-emerald-700 text-sm">Die Differenz (das Minus in der Mitte) bildet das Hauptgerüst. Quotient und Produkt werden durch die Klammern (bzw. Punkt-vor-Strich) zuerst ausgerechnet.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function checkVocab(id, pattern) {
+            const val = document.getElementById(id).value.trim();
+            return pattern.test(val);
+        }
+
+        function setNodeStyle(nodeId, isValid) {
+            const el = document.getElementById(nodeId);
+            el.classList.remove('correct-node', 'wrong-node');
+            if (isValid) el.classList.add('correct-node');
+            else el.classList.add('wrong-node');
+        }
+
+        function showFb(id, msg, isSuccess) {
+            const el = document.getElementById(id);
+            el.innerHTML = isSuccess ? `✅ ${msg}` : `💡 <strong>Tipp:</strong> ${msg}`;
+            el.className = `mt-3 block p-3 rounded-lg text-sm shadow-sm ${isSuccess ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-amber-100 text-amber-800 border border-amber-200'}`;
+            el.classList.remove('hidden');
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([el]).catch((err) => console.log(err.message));
+            }
+        }
+
+        let a_done = false;
+        let b_done = false;
+
+        function checkAllDone() {
+            if (a_done && b_done) {
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+                const sol = document.getElementById('solution_section');
+                sol.classList.remove('hidden');
+                setTimeout(() => sol.classList.remove('opacity-0'), 50);
+                setTimeout(() => sol.scrollIntoView({ behavior: 'smooth' }), 300);
+            }
+        }
+
+        // --- Task A ---
+        function checkTreeA() {
+            // Regex allows optional "1." or "erster" before the word
+            const s1Correct = checkVocab('a_summand1', /(1\.?|erster)?\s*summand/i);
+            const s2Correct = checkVocab('a_summand2', /(2\.?|zweiter)?\s*summand/i);
+            const f1Correct = checkVocab('a_faktor1', /(1\.?|erster)?\s*faktor/i);
+            const f2Correct = checkVocab('a_faktor2', /(2\.?|zweiter)?\s*faktor/i);
+            
+            // Apply styles based on overall node correctness (node needs both to be checked if applicable, but here each node has 1 input)
+            setNodeStyle('node_a_l1', s1Correct);
+            setNodeStyle('node_a_r1', s2Correct);
+            setNodeStyle('node_a_l2_1', f1Correct);
+            setNodeStyle('node_a_l2_2', f2Correct);
+
+            if (!s1Correct || !s2Correct) {
+                showFb('fb_tree_a', "Hier gehören <strong>Fachbegriffe</strong> hinein! Orientier dich an dem Begriff darüber. Ganz oben steht 'Summe'. Die Teile einer Summe heißen natürlich nicht Faktor oder Produkt, sondern...?", false);
+            } else if (!f1Correct || !f2Correct) {
+                showFb('fb_tree_a', "Die Summanden stimmen! Jetzt nach unten: Hier gehören ebenfalls <strong>Fachbegriffe</strong> hinein! Orientier dich an dem Begriff direkt darüber. Dort steht 'Produkt'. Die Teile eines Produkts hängen mit dem Wort Faktor zusammen, aber sicher nicht mit dem Begriff Subtrahend.", false);
+            } else {
+                showFb('fb_tree_a', "Hervorragend! Du sprichst fließend Mathematik. Baue nun den Term.", true);
+                const section = document.getElementById('section_term_a');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            }
+        }
+
+        function checkTermA() {
+            const v1 = document.getElementById('a_term_1').value;
+            const v2 = document.getElementById('a_term_2').value;
+            const v3 = document.getElementById('a_term_3').value;
+            
+            let correct = true;
+            if (v1 != "6") { setNodeStyle('a_term_1', false); correct = false; } else { document.getElementById('a_term_1').style.borderColor = '#22c55e'; document.getElementById('a_term_1').style.backgroundColor = '#dcfce7'; }
+            if (v2 != "-7") { setNodeStyle('a_term_2', false); correct = false; } else { document.getElementById('a_term_2').style.borderColor = '#22c55e'; document.getElementById('a_term_2').style.backgroundColor = '#dcfce7'; }
+            if (v3 != "17") { setNodeStyle('a_term_3', false); correct = false; } else { document.getElementById('a_term_3').style.borderColor = '#22c55e'; document.getElementById('a_term_3').style.backgroundColor = '#dcfce7'; }
+
+            if (correct) {
+                showFb('fb_term_a', "Klasse eingesetzt! Mach dich nun an den Bonus.", true);
+                const section = document.getElementById('section_bonus_a');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            } else {
+                showFb('fb_term_a', "Lies die Zahlen einfach von links nach rechts in der untersten Ebene des Baumes ab.", false);
+            }
+        }
+
+        function checkBonusA() {
+            const v = document.getElementById('a_bonus').value;
+            if (v == "-25") {
+                document.getElementById('a_bonus').classList.add('correct-node');
+                showFb('fb_bonus_a', "Völlig richtig! $-42 + 17 = -25$.", true);
+                a_done = true;
+                checkAllDone();
+            } else {
+                document.getElementById('a_bonus').classList.add('wrong-node');
+                showFb('fb_bonus_a', "Fast! Rechne zuerst $6 \\cdot (-7)$ in der eckigen Klammer. Addiere danach die $17$ dazu.", false);
+            }
+        }
+
+        // --- Task B ---
+        function checkTreeB() {
+            const rootOk = checkVocab('b_root', /differenz/i);
+            const minOk = checkVocab('b_minuend', /minuend/i);
+            const quotOk = checkVocab('b_quotient', /quotient/i);
+            const prodOk = checkVocab('b_produkt', /produkt/i);
+            const divOk = checkVocab('b_divisor', /divisor/i);
+            const faktOk = checkVocab('b_faktor1', /(1\.?|erster)?\s*faktor/i);
+            
+            // Apply styles to nodes
+            setNodeStyle('node_b_root', rootOk);
+            setNodeStyle('node_b_l1', minOk && quotOk);
+            setNodeStyle('node_b_r1', prodOk);
+            setNodeStyle('node_b_l2_2', divOk);
+            setNodeStyle('node_b_r2_1', faktOk);
+
+            // Give specific feedback based on what's missing
+            if (!rootOk) {
+                showFb('fb_tree_b', "Hier gehört ein <strong>Fachbegriff</strong> hinein! Orientier dich an den Begriffen unterhalb. Dort steht 'Subtrahend'. Wenn es einen Subtrahenden gibt, wie nennt man dann das Gesamtergebnis dieser Minus-Rechnung?", false);
+            } else if (!minOk) {
+                showFb('fb_tree_b', "Hier gehört ein <strong>Fachbegriff</strong> hinein! Orientier dich an seinem Partner-Begriff rechts: Dort steht 'Subtrahend'. Wie heißt dann die erste Zahl in dieser Minus-Rechnung?", false);
+            } else if (!quotOk || !divOk) {
+                showFb('fb_tree_b', "Hier gehören <strong>Fachbegriffe</strong> hinein! Orientier dich an den Begriffen daneben/darunter. Links steht 'Dividend' (Geteilt-Aufgabe). Das Ergebnis davon nennt man nicht Produkt, sondern...? Und wie heißt die zweite Zahl beim Teilen?", false);
+            } else if (!prodOk || !faktOk) {
+                showFb('fb_tree_b', "Hier gehören <strong>Fachbegriffe</strong> hinein! Orientier dich an dem Begriff '2. Faktor' ganz unten. Ein Faktor gehört immer zu einer Mal-Aufgabe. Wie heißt das Ergebnis einer Mal-Aufgabe (darüber) und wie die erste Zahl daneben?", false);
+            } else {
+                showFb('fb_tree_b', "Meisterhaft! Du hast den gesamten Strukturbaum decodiert.", true);
+                const section = document.getElementById('section_term_b');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            }
+        }
+
+        function checkTermB() {
+            const v1 = document.getElementById('b_term_1').value;
+            const v2 = document.getElementById('b_term_2').value;
+            const v3 = document.getElementById('b_term_3').value;
+            const v4 = document.getElementById('b_term_4').value;
+            
+            let correct = true;
+            if (v1 != "-24") { correct = false; document.getElementById('b_term_1').style.borderColor = '#ef4444'; } else { document.getElementById('b_term_1').style.borderColor = '#22c55e'; document.getElementById('b_term_1').style.backgroundColor = '#dcfce7'; }
+            if (v2 != "-8") { correct = false; document.getElementById('b_term_2').style.borderColor = '#ef4444'; } else { document.getElementById('b_term_2').style.borderColor = '#22c55e'; document.getElementById('b_term_2').style.backgroundColor = '#dcfce7'; }
+            if (v3 != "9") { correct = false; document.getElementById('b_term_3').style.borderColor = '#ef4444'; } else { document.getElementById('b_term_3').style.borderColor = '#22c55e'; document.getElementById('b_term_3').style.backgroundColor = '#dcfce7'; }
+            if (v4 != "-4") { correct = false; document.getElementById('b_term_4').style.borderColor = '#ef4444'; } else { document.getElementById('b_term_4').style.borderColor = '#22c55e'; document.getElementById('b_term_4').style.backgroundColor = '#dcfce7'; }
+
+            if (correct) {
+                showFb('fb_term_b', "Genial eingesetzt! Löse nun als Letztes noch den Bonus.", true);
+                const section = document.getElementById('section_bonus_b');
+                section.classList.remove('hidden');
+                setTimeout(() => section.classList.remove('opacity-0'), 50);
+            } else {
+                showFb('fb_term_b', "Achte auf die Reihenfolge: Erst der Dividend, dann der Divisor, dann Faktor 1 und Faktor 2.", false);
+            }
+        }
+
+        function checkBonusB() {
+            const v = document.getElementById('b_bonus').value;
+            if (v == "39") {
+                document.getElementById('b_bonus').classList.add('correct-node');
+                showFb('fb_bonus_b', "Fantastisch! $3 - (-36) = 3 + 36 = 39$.", true);
+                b_done = true;
+                checkAllDone();
+            } else {
+                document.getElementById('b_bonus').classList.add('wrong-node');
+                showFb('fb_bonus_b', "Noch nicht ganz! Rechne zuerst beide Klammern aus: $(-24 : -8)$ ergibt $3$. Und $(9 \\cdot -4)$ ergibt $-36$. Was ist dann $3 - (-36)$?", false);
+            }
+        }
+    </script>
+</body>
+</html>

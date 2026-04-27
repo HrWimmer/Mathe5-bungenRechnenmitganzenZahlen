@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text in Terme - Übung S. 154/16</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        .feedback-transition {
+            transition: all 0.4s ease-in-out;
+        }
+        .correct-bg { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; } 
+        .wrong-bg { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }   
+        
+        input[type="text"], input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-rose-700 text-white py-8 shadow-md">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-2">Mathematik Klasse 5</h1>
+            <h2 class="text-xl opacity-90">Übersetzer gesucht: Übung S. 154 / 16</h2>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+
+        <!-- Info Card -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">🕵️</div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2">Die Sprache der Mathematik</h3>
+                    <p class="mb-2">Hier bist du als Übersetzer gefragt! Du musst deutsche Sätze in mathematische Terme übersetzen. Hier ein kleines Wörterbuch zur Erinnerung:</p>
+                    <ul class="list-disc list-inside space-y-2 font-semibold text-rose-800 bg-rose-50 p-4 rounded-lg border border-rose-200 mt-2">
+                        <li><strong>Summe / Addiere:</strong> Plus rechnen ($+$)</li>
+                        <li><strong>Differenz / Subtrahiere:</strong> Minus rechnen ($-$)</li>
+                        <li><strong>Produkt / Multipliziere:</strong> Mal rechnen ($\cdot$)</li>
+                        <li><strong>Quotient / Dividiere:</strong> Geteilt rechnen ($:$)</li>
+                        <li><strong>Quadrat / 3. Potenz:</strong> Hochzahlen (z.B. $x^2$ oder $x^3$)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block a -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe a)</h3>
+            <p class="text-lg italic text-slate-600 mb-6 font-serif">"Subtrahiere $-8$ vom Produkt aus $66$ und $-2$ und du erhältst $\triangle$."</p>
+            
+            <div class="space-y-6">
+                <!-- Term Setup -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold mb-3">1. Übersetze in einen Term:</h4>
+                    <div class="flex items-center gap-2 flex-wrap text-lg">
+                        <span>$($</span>
+                        <input type="number" id="a_t1" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$\cdot$</span>
+                        <input type="number" id="a_t2" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$-$</span>
+                        <span>$($</span>
+                        <input type="number" id="a_t3" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$=$</span>
+                        <span class="text-rose-600 font-bold">$\triangle$</span>
+                    </div>
+                </div>
+
+                <!-- Calculation -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold mb-3">2. Berechne schrittweise:</h4>
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        <span>Schritt 1 (Produkt): </span>
+                        <input type="number" id="a_s1" class="w-20 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$- (-8) = \triangle$</span>
+                    </div>
+                    <div class="flex items-center gap-3 pt-2 border-t border-slate-200 mt-2">
+                        <span class="font-bold text-rose-700">Endergebnis $\triangle = $</span>
+                        <input type="number" id="a_final" class="w-24 p-2 border-2 border-rose-400 rounded text-center font-bold focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <button onclick="checkTaskA()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    </div>
+                    <div id="fb_a" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block b -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe b)</h3>
+            <p class="text-lg italic text-slate-600 mb-6 font-serif">"Dividiere die dritte Potenz von $-4$ durch $-2$ und du erhältst $\triangle$."</p>
+            
+            <div class="space-y-6">
+                <!-- Term Setup -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold mb-3">1. Übersetze in einen Term:</h4>
+                    <div class="flex items-center gap-2 flex-wrap text-lg">
+                        <span>$($</span>
+                        <input type="number" id="b_t1" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$)^3$</span>
+                        <span>$:$</span>
+                        <span>$($</span>
+                        <input type="number" id="b_t2" class="w-16 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$=$</span>
+                        <span class="text-rose-600 font-bold">$\triangle$</span>
+                    </div>
+                </div>
+
+                <!-- Calculation -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold mb-3">2. Berechne schrittweise:</h4>
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        <span>Schritt 1 (Potenz): </span>
+                        <input type="number" id="b_s1" class="w-20 p-2 border-2 border-slate-300 rounded text-center focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>$: (-2) = \triangle$</span>
+                    </div>
+                    <div class="flex items-center gap-3 pt-2 border-t border-slate-200 mt-2">
+                        <span class="font-bold text-rose-700">Endergebnis $\triangle = $</span>
+                        <input type="number" id="b_final" class="w-24 p-2 border-2 border-rose-400 rounded text-center font-bold focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <button onclick="checkTaskB()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    </div>
+                    <div id="fb_b" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block c -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-amber-400 text-amber-900 font-bold px-4 py-1 rounded-bl-lg text-sm shadow-sm">Achtung: Sonderfall!</div>
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe c)</h3>
+            <p class="text-lg italic text-slate-600 mb-6 font-serif">"Multipliziere den Quotienten aus $\triangle$ und $8$ mit der Zahl $-27$ und du erhältst $-81$."</p>
+            
+            <div class="space-y-6">
+                <!-- Term Setup -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                    <h4 class="font-bold mb-3 text-amber-900">1. Übersetze in einen Term:</h4>
+                    <p class="text-sm mb-3 text-amber-800">Hier steht das $\triangle$ plötzlich mitten im Satz! Setze die Zahlen entsprechend ein.</p>
+                    <div class="flex items-center gap-2 flex-wrap text-lg">
+                        <span>$($</span>
+                        <span class="text-rose-600 font-bold">$\triangle$</span>
+                        <span>$:$</span>
+                        <input type="number" id="c_t1" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$\cdot$</span>
+                        <span>$($</span>
+                        <input type="number" id="c_t2" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$=$</span>
+                        <input type="number" id="c_t3" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                    </div>
+                </div>
+
+                <!-- Calculation -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                    <h4 class="font-bold mb-3 text-amber-900">2. Mache die Rechnung rückgängig:</h4>
+                    <p class="text-sm mb-3 text-amber-800">Da $\triangle$ am Anfang steht, müssen wir das Endergebnis nehmen und rückwärts rechnen!</p>
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        <span>Schritt 1 (Die Klammer ausrechnen): $\triangle : 8 =$</span>
+                        <input type="number" id="c_s1" class="w-20 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        <span class="text-sm italic text-amber-700 ml-2">(Tipp: Was ist $-81 : (-27)$?)</span>
+                    </div>
+                    <div class="flex items-center gap-3 pt-2 border-t border-amber-300 mt-2">
+                        <span class="font-bold text-rose-700">Endergebnis $\triangle = $</span>
+                        <input type="number" id="c_final" class="w-24 p-2 border-2 border-rose-400 rounded text-center font-bold focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <button onclick="checkTaskC()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    </div>
+                    <div id="fb_c" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block d -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-amber-400 text-amber-900 font-bold px-4 py-1 rounded-bl-lg text-sm shadow-sm">Achtung: Knobelaufgabe!</div>
+            <h3 class="text-2xl font-bold mb-4 border-b pb-2 text-slate-700">Aufgabe d)</h3>
+            <p class="text-lg italic text-slate-600 mb-6 font-serif">"Addiere zum Quadrat von $\triangle$ die Zahl $-12$ und du erhältst $\triangle$."</p>
+            
+            <div class="space-y-6">
+                <!-- Term Setup -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                    <h4 class="font-bold mb-3 text-amber-900">1. Übersetze in eine Gleichung:</h4>
+                    <p class="text-sm mb-3 text-amber-800">Hier steht das $\triangle$ sogar zweimal im Satz!</p>
+                    <div class="flex items-center gap-2 flex-wrap text-lg">
+                        <span>$($</span>
+                        <span class="text-rose-600 font-bold">$\triangle$</span>
+                        <span>$)^2$</span>
+                        <span>$+$</span>
+                        <span>$($</span>
+                        <input type="number" id="d_t1" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        <span>$)$</span>
+                        <span>$=$</span>
+                        <span class="text-rose-600 font-bold">$\triangle$</span>
+                    </div>
+                </div>
+
+                <!-- Calculation -->
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                    <h4 class="font-bold mb-3 text-amber-900">2. Systematisches Probieren:</h4>
+                    <p class="text-sm mb-3 text-amber-800">Da das $\triangle$ auf beiden Seiten steht, funktioniert das Rückwärtsrechnen aus Aufgabe c) hier nicht! Wir müssen geschickt Zahlen einsetzen und probieren.</p>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Versuch 1: Setzen wir für $\triangle$ mal die Zahl $4$ ein:</span>
+                            <span>$4^2 + (-12) =$</span>
+                            <input type="number" id="d_s1" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>Versuch 2: Setzen wir für $\triangle$ mal die Zahl $-3$ ein:</span>
+                            <span>$(-3)^2 + (-12) =$</span>
+                            <input type="number" id="d_s2" class="w-16 p-2 border-2 border-amber-300 rounded text-center focus:ring-2 focus:ring-amber-500 feedback-transition" placeholder="?">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2 border-t border-amber-300 mt-2">
+                        <span class="font-bold text-rose-700">Welche Zahlen passen also für $\triangle$?</span>
+                        <input type="number" id="d_final1" class="w-16 p-2 border-2 border-rose-400 rounded text-center font-bold focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <span>oder</span>
+                        <input type="number" id="d_final2" class="w-16 p-2 border-2 border-rose-400 rounded text-center font-bold focus:ring-2 focus:ring-rose-500 feedback-transition" placeholder="?">
+                        <button onclick="checkTaskD()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded transition">Prüfen</button>
+                    </div>
+                    <div id="fb_d" class="hidden mt-3 text-sm"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Socratic Reflection Task -->
+        <section class="bg-blue-50 border-2 border-blue-200 p-6 rounded-xl shadow-md">
+            <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
+                <span>🕵️</span> Umkehren oder Probieren?
+            </h3>
+            <p class="mb-4">Die Aufgaben <strong>c) und d)</strong> waren besondere Knobelaufgaben.</p>
+            <p class="font-bold mb-2">Erkläre in eigenen Worten: Wie konntest du das Dreieck bei c) berechnen (Stichwort: Gegenteil)? Und warum ging das bei d) nicht, sondern du musstest probieren?</p>
+            
+            <textarea id="reflection_text" rows="4" class="w-full p-3 border border-blue-300 rounded-lg shadow-inner focus:ring-2 focus:ring-blue-500 feedback-transition" placeholder="Bei c) musste ich..., weil... Bei d) musste ich..., weil..."></textarea>
+            
+            <div class="mt-4 flex flex-col md:flex-row items-center gap-4">
+                <button onclick="checkReflection()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition w-full md:w-auto">Antwort analysieren</button>
+                <div id="reflection_feedback" class="text-sm w-full p-3 rounded-lg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Final Solution (Hidden initially) -->
+        <section id="solution_section" class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 hidden opacity-0 transition-opacity duration-1000">
+            <h3 class="text-2xl font-bold text-emerald-800 mb-4 border-b border-emerald-200 pb-2">🎉 Spitzenmäßig! Hier ist die Musterlösung</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm md:text-base">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe a)</h4>
+                        <p class="text-emerald-800 bg-emerald-100 p-2 rounded mb-2">"Subtrahiere -8 vom Produkt aus 66 und -2..."</p>
+                        <p>$(66 \cdot (-2)) - (-8) = \triangle$ <br>
+                        $-132 + 8 = \triangle$ <br>
+                        $\mathbf{-124 = \triangle}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe b)</h4>
+                        <p class="text-emerald-800 bg-emerald-100 p-2 rounded mb-2">"Dividiere die dritte Potenz von -4 durch -2..."</p>
+                        <p>$(-4)^3 : (-2) = \triangle$ <br>
+                        $-64 : (-2) = \triangle$ <br>
+                        $\mathbf{32 = \triangle}$</p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe c)</h4>
+                        <p class="text-emerald-800 bg-emerald-100 p-2 rounded mb-2">"Multipliziere den Quotienten aus $\triangle$ und 8 mit der Zahl -27 und du erhältst -81."</p>
+                        <p>$(\triangle : 8) \cdot (-27) = -81$ <br>
+                        <em>Umkehraufgabe 1:</em> $\triangle : 8 = -81 : (-27)$ <br>
+                        $\triangle : 8 = 3$ <br>
+                        <em>Umkehraufgabe 2:</em> $\triangle = 3 \cdot 8$ <br>
+                        $\mathbf{\triangle = 24}$</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 mb-1 border-b border-emerald-300 pb-1">Aufgabe d)</h4>
+                        <p class="text-emerald-800 bg-emerald-100 p-2 rounded mb-2">"Addiere zum Quadrat von $\triangle$ die Zahl -12 und du erhältst $\triangle$."</p>
+                        <p>$(\triangle)^2 + (-12) = \triangle$ <br>
+                        <em>Lösung durch systematisches Probieren:</em><br>
+                        Setze $4$ ein: $4^2 - 12 = 16 - 12 = 4 \rightarrow$ Passt!<br>
+                        Setze $-3$ ein: $(-3)^2 - 12 = 9 - 12 = -3 \rightarrow$ Passt!<br>
+                        $\mathbf{\triangle = 4}$ oder $\mathbf{\triangle = -3}$</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Helper Functions ---
+        function parseNum(val) {
+            if (typeof val !== 'string') return NaN;
+            return parseFloat(val.trim().replace(',', '.'));
+        }
+
+        function isCorrect(id, target) {
+            const val = document.getElementById(id).value;
+            return parseNum(val) === target;
+        }
+
+        function setStyle(id, isValid) {
+            const el = document.getElementById(id);
+            el.classList.remove('correct-bg', 'wrong-bg');
+            if (isValid) el.classList.add('correct-bg');
+            else el.classList.add('wrong-bg');
+        }
+
+        function showFb(id, msg, isSuccess) {
+            const el = document.getElementById(id);
+            el.innerHTML = isSuccess ? `✅ ${msg}` : `💡 <strong>Tipp:</strong> ${msg}`;
+            el.className = `mt-3 block p-3 rounded-lg text-sm shadow-sm ${isSuccess ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'}`;
+            el.classList.remove('hidden');
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([el]).catch((err) => console.log(err.message));
+            }
+        }
+
+        // Check if all tasks are complete
+        let tasksDone = {a: false, b: false, c: false, d: false, refl: false};
+
+        function checkAllDone() {
+            if (tasksDone.a && tasksDone.b && tasksDone.c && tasksDone.d && tasksDone.refl) {
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6 } });
+                const sol = document.getElementById('solution_section');
+                sol.classList.remove('hidden');
+                setTimeout(() => sol.classList.remove('opacity-0'), 50);
+                setTimeout(() => sol.scrollIntoView({ behavior: 'smooth' }), 300);
+            }
+        }
+
+        // --- Task A ---
+        function checkTaskA() {
+            let t1 = isCorrect('a_t1', 66);
+            let t2 = isCorrect('a_t2', -2);
+            let t3 = isCorrect('a_t3', -8);
+            let s1 = isCorrect('a_s1', -132);
+            let final = isCorrect('a_final', -124);
+
+            setStyle('a_t1', t1); setStyle('a_t2', t2); setStyle('a_t3', t3);
+            setStyle('a_s1', s1); setStyle('a_final', final);
+
+            if (!t1 || !t2 || !t3) {
+                showFb('fb_a', "Schau dir den Text genau an. 'Produkt aus $66$ und $-2$' gehört in die Mal-Rechnung. 'Subtrahiere $-8$' bedeutet, dass die $-8$ ganz hinten ins Minus-Feld muss.", false);
+            } else if (!s1) {
+                showFb('fb_a', "Der Term ist richtig aufgebaut! Rechne nun $66 \\cdot (-2)$. Plus mal Minus ist...?", false);
+            } else if (!final) {
+                showFb('fb_a', "Schritt 1 stimmt! Jetzt musst du $-132 - (-8)$ rechnen. Denke daran: Minus Minus wird zu Plus!", false);
+            } else {
+                showFb('fb_a', "Exzellent! Du hast Text, Term und Rechnung perfekt gemeistert.", true);
+                tasksDone.a = true; checkAllDone();
+            }
+        }
+
+        // --- Task B ---
+        function checkTaskB() {
+            let t1 = isCorrect('b_t1', -4);
+            let t2 = isCorrect('b_t2', -2);
+            let s1 = isCorrect('b_s1', -64);
+            let final = isCorrect('b_final', 32);
+
+            setStyle('b_t1', t1); setStyle('b_t2', t2);
+            setStyle('b_s1', s1); setStyle('b_final', final);
+
+            if (!t1 || !t2) {
+                showFb('fb_b', "Lies genau: Die 'dritte Potenz von $-4$' heißt, dass die $-4$ hoch 3 gerechnet wird. Und dividiert wird durch $-2$.", false);
+            } else if (!s1) {
+                showFb('fb_b', "Der Term sitzt! Rechne nun $(-4)^3$. Das bedeutet $(-4) \\cdot (-4) \\cdot (-4)$. Ist das Ergebnis positiv oder negativ?", false);
+            } else if (!final) {
+                showFb('fb_b', "Richtig potenziert! Teile nun $-64$ durch $-2$. Minus geteilt durch Minus ergibt...?", false);
+            } else {
+                showFb('fb_b', "Hervorragend gelöst!", true);
+                tasksDone.b = true; checkAllDone();
+            }
+        }
+
+        // --- Task C ---
+        function checkTaskC() {
+            let t1 = isCorrect('c_t1', 8);
+            let t2 = isCorrect('c_t2', -27);
+            let t3 = isCorrect('c_t3', -81);
+            let s1 = isCorrect('c_s1', 3);
+            let final = isCorrect('c_final', 24);
+
+            setStyle('c_t1', t1); setStyle('c_t2', t2); setStyle('c_t3', t3);
+            setStyle('c_s1', s1); setStyle('c_final', final);
+
+            if (!t1 || !t2 || !t3) {
+                showFb('fb_c', "Beim Term: Quotient heißt 'geteilt'. Also $\\triangle : 8$. Multipliziert wird mit $-27$. Und das Ergebnis am Ende (nach dem $=$) ist $-81$.", false);
+            } else if (!s1) {
+                showFb('fb_c', "Der Term ist aufgestellt. Da das Dreieck versteckt ist, rechnen wir rückwärts! Nimm das Endergebnis ($-81$) und teile es durch den Faktor ($-27$), um herauszufinden, was die Klammer wert sein muss.", false);
+            } else if (!final) {
+                showFb('fb_c', "Die Klammer ist also $3$ wert. Das heißt: $\\triangle : 8 = 3$. Um das Dreieck zu bekommen, musst du jetzt wieder rückwärts rechnen! (Tipp: Gegenteil von Geteilt).", false);
+            } else {
+                showFb('fb_c', "Großartig! Du hast dich von hinten nach vorne durchgekämpft.", true);
+                tasksDone.c = true; checkAllDone();
+            }
+        }
+
+        // --- Task D ---
+        function checkTaskD() {
+            let t1 = isCorrect('d_t1', -12);
+            let s1 = isCorrect('d_s1', 4);
+            let s2 = isCorrect('d_s2', -3);
+            
+            let f1 = parseNum(document.getElementById('d_final1').value);
+            let f2 = parseNum(document.getElementById('d_final2').value);
+            
+            // Allow both fields to be either 4 or -3, but they must be different
+            let final1Correct = (f1 === 4 || f1 === -3);
+            let final2Correct = (f2 === 4 || f2 === -3) && (f1 !== f2);
+
+            setStyle('d_t1', t1);
+            setStyle('d_s1', s1); setStyle('d_s2', s2);
+            
+            const elF1 = document.getElementById('d_final1');
+            const elF2 = document.getElementById('d_final2');
+            elF1.classList.remove('correct-bg', 'wrong-bg');
+            elF2.classList.remove('correct-bg', 'wrong-bg');
+            if (final1Correct) elF1.classList.add('correct-bg'); else elF1.classList.add('wrong-bg');
+            if (final2Correct) elF2.classList.add('correct-bg'); else elF2.classList.add('wrong-bg');
+
+            let finalAll = final1Correct && final2Correct;
+
+            if (!t1) {
+                showFb('fb_d', "Welche Zahl wird addiert? Das muss in die Klammer.", false);
+            } else if (!s1 || !s2) {
+                showFb('fb_d', "Rechne die beiden Versuche genau aus: $16 + (-12)$ und $9 + (-12)$.", false);
+            } else if (!finalAll) {
+                showFb('fb_d', "Überlege: Bei welchen Versuchen kam am Ende genau die gleiche Zahl heraus, die du auch vorne eingesetzt hast?", false);
+            } else {
+                showFb('fb_d', "Genial! Wenn die gesuchte Zahl auf beiden Seiten steht, ist systematisches Probieren oft der beste Weg.", true);
+                tasksDone.d = true; checkAllDone();
+            }
+        }
+
+        // --- Socratic Reflection (Regex) ---
+        function checkReflection() {
+            const text = document.getElementById('reflection_text').value.trim();
+            const el = document.getElementById('reflection_text');
+            const fbBox = document.getElementById('reflection_feedback');
+            
+            if (text.length < 15) {
+                fbBox.innerHTML = "💡 Da fehlt noch etwas Text. Beschreibe deinen Weg bei Aufgabe c) und d) genauer.";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-amber-100 text-amber-800 border border-amber-200";
+                fbBox.classList.remove('hidden');
+                return;
+            }
+
+            const regexReverse = /(?=.*([uU]mkehr|[rR]ückwärts|[gG]egenteil|[vV]on hinten|[aA]ndersrum|[rR]etour))/i;
+            const regexTwice = /(?=.*([pP]robieren|[zZ]wei|[bB]eid|[dD]oppelt))/i;
+
+            if (!regexReverse.test(text)) {
+                el.classList.remove('correct-bg');
+                el.classList.add('wrong-bg');
+                fbBox.innerHTML = "💡 <strong>Tipp zu c):</strong> Wie nennt man die Rechen-Methode, wenn man von hinten anfängt und das Gegenteil von den ursprünglichen Zeichen macht (z.B. Geteilt statt Mal)?";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-red-100 text-red-800 border border-red-200";
+                fbBox.classList.remove('hidden');
+            } else if (!regexTwice.test(text)) {
+                el.classList.remove('correct-bg');
+                el.classList.add('wrong-bg');
+                fbBox.innerHTML = "💡 <strong>Tipp zu d):</strong> Sehr gut für c)! Aber warum klappt das bei d) nicht? Wo stand das Dreieck überall? (Erwähne, dass man 'probieren' musste oder es 'zweimal' vorkam).";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-red-100 text-red-800 border border-red-200";
+                fbBox.classList.remove('hidden');
+            }
+            else {
+                // Success!
+                el.classList.remove('wrong-bg');
+                el.classList.add('correct-bg');
+                fbBox.innerHTML = "✅ <strong>Brillant erkannt!</strong> Bei c) hilft die <strong>Umkehraufgabe</strong>. Bei d) steht das Dreieck auf beiden Seiten des Gleichheitszeichens. Rückwärtsrechnen klappt dann noch nicht, also hilft uns <strong>systematisches Probieren</strong>!";
+                fbBox.className = "text-sm mt-3 block p-3 rounded-lg bg-green-100 text-green-800 border border-green-200";
+                fbBox.classList.remove('hidden');
+                
+                tasksDone.refl = true;
+                checkAllDone();
+            }
+        }
+    </script>
+</body>
+</html>
