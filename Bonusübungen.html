@@ -52,13 +52,16 @@
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen pb-20">
 
     <!-- Sticky Header with Score -->
-    <header class="bg-indigo-800 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight">Klasse 5 Trainings-Arena</h1>
-                <p class="text-indigo-200 text-sm hidden sm:block">Sammle Punkte in den Endlos-Herausforderungen!</p>
+    <header class="bg-indigo-800 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md bg-indigo-800/95">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4 md:gap-6">
+            <a href="index.html" class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-2xl transition backdrop-blur-sm shadow-inner flex items-center justify-center shrink-0 group" title="Hauptmenü">
+                <span class="text-2xl group-hover:scale-110 transition-transform">🏠</span>
+            </a>
+            <div class="flex-grow">
+                <h1 class="text-lg md:text-2xl font-bold tracking-tight">Klasse 5 Trainings-Arena</h1>
+                <p class="text-indigo-200 text-xs md:text-sm hidden sm:block">Sammle Punkte in den Endlos-Herausforderungen!</p>
             </div>
-            <div id="score_display" class="bg-white text-indigo-900 font-black text-2xl px-6 py-2 rounded-full shadow-inner border-4 border-indigo-300 feedback-transition flex items-center gap-2">
+            <div id="score_display" class="bg-white text-indigo-900 font-black text-xl md:text-2xl px-4 md:px-6 py-2 rounded-full shadow-inner border-4 border-indigo-300 feedback-transition flex items-center gap-2">
                 <span>🏆</span> <span id="score_val">0</span>
             </div>
         </div>
@@ -173,6 +176,15 @@
             </section>
 
         </div>
+    <!-- Navigation Buttons -->
+    <footer class="max-w-6xl mx-auto px-4 mt-12 pb-10">
+        <div class="flex flex-col md:flex-row justify-center gap-4">
+            <a href="index.html" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-12 rounded-2xl transition shadow-xl flex items-center justify-center gap-3 group text-xl">
+                <span>🏠</span> Zurück zum Hauptmenü
+            </a>
+        </div>
+    </footer>
+
     </main>
 
     <script>
